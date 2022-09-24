@@ -1,5 +1,6 @@
 package com.flowmoney.api.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -8,35 +9,35 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "categoria")
-public class Categoria {
+@Table(name = "conta")
+public class Conta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull
-	@Size(min = 3, max = 20)
-	private String nome;
-	private Integer tipo;
+	private BigDecimal saldo;
 
-	public String getNome() {
-		return nome;
+	@NotNull
+	private String descricao;
+
+	public BigDecimal getSaldo() {
+		return saldo;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setSaldo(BigDecimal saldo) {
+		this.saldo = saldo;
 	}
 
-	public Integer getTipo() {
-		return tipo;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setTipo(Integer tipo) {
-		this.tipo = tipo;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	public Long getId() {
@@ -56,7 +57,7 @@ public class Categoria {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Conta other = (Conta) obj;
 		return Objects.equals(id, other.id);
 	}
 

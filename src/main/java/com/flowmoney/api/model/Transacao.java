@@ -1,34 +1,50 @@
 package com.flowmoney.api.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "categoria")
-public class Categoria {
+@Table(name = "transacao")
+public class Transacao {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull
-	@Size(min = 3, max = 20)
-	private String nome;
+	private BigDecimal valor;
+
+	@NotNull
 	private Integer tipo;
 
-	public String getNome() {
-		return nome;
+	@NotNull
+	private String descricao;
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "categoria")
+	private Categoria categoria;
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "conta")
+	private Conta conta;
+
+	public BigDecimal getValor() {
+		return valor;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 	public Integer getTipo() {
@@ -37,6 +53,22 @@ public class Categoria {
 
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 
 	public Long getId() {
@@ -56,7 +88,7 @@ public class Categoria {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Transacao other = (Transacao) obj;
 		return Objects.equals(id, other.id);
 	}
 
