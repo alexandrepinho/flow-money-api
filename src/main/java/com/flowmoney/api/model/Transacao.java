@@ -1,24 +1,19 @@
 package com.flowmoney.api.model;
 
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "transacao")
-public class Transacao {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class Transacao extends AbstractEntity<Long> {
 
 	@NotNull
 	private BigDecimal valor;
@@ -30,14 +25,22 @@ public class Transacao {
 	private String descricao;
 
 	@NotNull
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	private LocalDate data;
+
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "categoria")
 	private Categoria categoria;
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "conta")
 	private Conta conta;
+
+	@ManyToOne
+	@JoinColumn(name = "usuario")
+	private Usuario usuario;
 
 	public BigDecimal getValor() {
 		return valor;
@@ -63,33 +66,24 @@ public class Transacao {
 		this.descricao = descricao;
 	}
 
-	public Categoria getCategoria() {
-		return categoria;
-	}
-
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
 
-	public Long getId() {
-		return id;
+	public LocalDate getData() {
+		return data;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+	public void setData(LocalDate data) {
+		this.data = data;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Transacao other = (Transacao) obj;
-		return Objects.equals(id, other.id);
+	public void setConta(Conta conta) {
+		this.conta = conta;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }
