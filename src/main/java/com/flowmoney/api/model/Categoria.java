@@ -12,6 +12,7 @@ public class Categoria extends AbstractEntity<Long> {
 	@NotNull
 	@Size(min = 3, max = 20)
 	private String nome;
+	@NotNull
 	private Integer tipo;
 
 	public String getNome() {

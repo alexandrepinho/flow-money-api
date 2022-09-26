@@ -18,6 +18,7 @@ public class Conta extends AbstractEntity<Long> {
 	@NotNull
 	private String descricao;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;

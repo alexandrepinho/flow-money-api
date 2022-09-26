@@ -38,6 +38,7 @@ public class Transacao extends AbstractEntity<Long> {
 	@JoinColumn(name = "conta")
 	private Conta conta;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
