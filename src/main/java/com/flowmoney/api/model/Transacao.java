@@ -71,6 +71,14 @@ public class Transacao extends AbstractEntity<Long> {
 		this.categoria = categoria;
 	}
 
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public Conta getConta() {
+		return conta;
+	}
+
 	public LocalDate getData() {
 		return data;
 	}
@@ -81,6 +89,10 @@ public class Transacao extends AbstractEntity<Long> {
 
 	public void setConta(Conta conta) {
 		this.conta = conta;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
 	public void setUsuario(Usuario usuario) {
