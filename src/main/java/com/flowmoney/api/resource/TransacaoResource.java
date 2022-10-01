@@ -39,7 +39,6 @@ import com.flowmoney.api.repository.filter.TransacaoFilter;
 import com.flowmoney.api.service.TransacaoService;
 import com.flowmoney.api.service.exception.CategoriaInexistenteException;
 import com.flowmoney.api.service.exception.ContaInexistenteException;
-import com.flowmoney.api.service.exception.UsuarioInexistenteException;
 
 @RestController
 @RequestMapping("/transacoes")
@@ -88,15 +87,11 @@ public class TransacaoResource {
 		return transacao != null ? ResponseEntity.ok(transacao) : ResponseEntity.notFound().build();
 	}
 
-	@ExceptionHandler({ UsuarioInexistenteException.class, CategoriaInexistenteException.class,
+	@ExceptionHandler({ CategoriaInexistenteException.class,
 			ContaInexistenteException.class })
 	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
 
 		String message = "";
-
-		if (ex instanceof UsuarioInexistenteException) {
-			message = "usuario.inexistente";
-		}
 
 		if (ex instanceof CategoriaInexistenteException) {
 			message = "categoria.inexistente";
