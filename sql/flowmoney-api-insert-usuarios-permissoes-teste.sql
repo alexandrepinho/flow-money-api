@@ -17,6 +17,13 @@ INSERT INTO permissao (id, descricao) values (10, 'ROLE_ALTERAR_TRANSACAO');
 INSERT INTO permissao (id, descricao) values (11, 'ROLE_REMOVER_TRANSACAO');
 INSERT INTO permissao (id, descricao) values (12, 'ROLE_PESQUISAR_TRANSACAO');
 
+INSERT INTO permissao (id, descricao) values (13, 'ROLE_CADASTRAR_CONTA');
+INSERT INTO permissao (id, descricao) values (14, 'ROLE_ALTERAR_CONTA');
+INSERT INTO permissao (id, descricao) values (15, 'ROLE_REMOVER_CONTA');
+INSERT INTO permissao (id, descricao) values (16, 'ROLE_PESQUISAR_CONTA');
+
+-- 2 perfis -  administrador com acesso para cadastrar novos usuários e usuário comum sem gerencia de outros usuários mas com gerencia das suas transações
+
 -- Admin
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 1);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 2);
@@ -39,7 +46,3 @@ INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 9);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 10);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 11);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 12);
-
--- Juliana
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (3, 4);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (3, 12);
