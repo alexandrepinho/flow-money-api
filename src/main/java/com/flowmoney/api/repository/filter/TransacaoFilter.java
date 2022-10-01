@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.flowmoney.api.model.Usuario;
+
 public class TransacaoFilter {
 
 	private String descricao;
@@ -11,6 +13,8 @@ public class TransacaoFilter {
 	private LocalDate dataDe;
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private LocalDate dataAte;
+
+	private Usuario usuario;
 
 	public String getDescricao() {
 		return descricao;
@@ -34,6 +38,14 @@ public class TransacaoFilter {
 
 	public void setDataAte(LocalDate dataAte) {
 		this.dataAte = dataAte;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

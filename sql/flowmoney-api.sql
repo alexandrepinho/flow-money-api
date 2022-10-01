@@ -15,19 +15,6 @@ CREATE SCHEMA IF NOT EXISTS `flowmoney-api` DEFAULT CHARACTER SET utf8 ;
 USE `flowmoney-api` ;
 
 -- -----------------------------------------------------
--- Table `flowmoney-api`.`categoria`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `flowmoney-api`.`categoria` ;
-
-CREATE TABLE IF NOT EXISTS `flowmoney-api`.`categoria` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(50) NOT NULL,
-  `tipo` SMALLINT(1) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `flowmoney-api`.`usuario`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `flowmoney-api`.`usuario` ;
@@ -38,6 +25,26 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`usuario` (
   `email` VARCHAR(50) NOT NULL,
   `senha` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `flowmoney-api`.`categoria`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `flowmoney-api`.`categoria` ;
+
+CREATE TABLE IF NOT EXISTS `flowmoney-api`.`categoria` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(50) NOT NULL,
+  `tipo` SMALLINT(1) NOT NULL,
+  `usuario` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`id`, `usuario`),
+  INDEX `fk_categoria_usuario1_idx` (`usuario` ASC) VISIBLE,
+  CONSTRAINT `fk_categoria_usuario1`
+    FOREIGN KEY (`usuario`)
+    REFERENCES `flowmoney-api`.`usuario` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 

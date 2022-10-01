@@ -46,6 +46,8 @@ public class TransacaoRepositoryImpl implements TransacaoRepositoryQuery {
 
 		List<Predicate> predicates = new ArrayList<>();
 
+		predicates.add(builder.equal(root.get(Transacao_.usuario), transacaoFilter.getUsuario()));
+
 		if (!ObjectUtils.isEmpty(transacaoFilter.getDescricao())) {
 			predicates.add(builder.like(builder.lower(root.get(Transacao_.descricao)),
 					"%" + transacaoFilter.getDescricao().toLowerCase() + "%"));

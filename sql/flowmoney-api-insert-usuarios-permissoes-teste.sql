@@ -36,6 +36,11 @@ INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 8);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 9);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 10);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 11);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 12);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 13);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 14);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 15);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 16);
 
 -- Alexandre
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 1);
@@ -46,3 +51,7 @@ INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 9);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 10);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 11);
 INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 12);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 13);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 14);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 15);
+INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 16);

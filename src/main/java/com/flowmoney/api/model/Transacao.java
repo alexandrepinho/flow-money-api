@@ -38,7 +38,6 @@ public class Transacao extends AbstractEntity<Long> {
 	@JoinColumn(name = "conta")
 	private Conta conta;
 
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
@@ -89,10 +88,6 @@ public class Transacao extends AbstractEntity<Long> {
 
 	public void setConta(Conta conta) {
 		this.conta = conta;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
 	}
 
 	public void setUsuario(Usuario usuario) {
