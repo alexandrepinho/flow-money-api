@@ -1,4 +1,4 @@
-package com.flowmoney.api.controller;
+package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
@@ -32,7 +32,7 @@ import com.flowmoney.api.service.CategoriaService;
 
 @RestController
 @RequestMapping("/categorias")
-public class CategoriaController {
+public class CategoriaResource {
 
 	@Autowired
 	public ApplicationEventPublisher publisher;

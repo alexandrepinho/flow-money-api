@@ -1,4 +1,4 @@
-package com.flowmoney.api.controller;
+package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
@@ -43,7 +43,7 @@ import com.flowmoney.api.service.exception.UsuarioInexistenteException;
 
 @RestController
 @RequestMapping("/transacoes")
-public class TransacaoController {
+public class TransacaoResource {
 
 	@Autowired
 	public ApplicationEventPublisher publisher;

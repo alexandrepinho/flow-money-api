@@ -1,4 +1,4 @@
-package com.flowmoney.api.controller;
+package com.flowmoney.api.resource;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import com.flowmoney.api.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuarioController {
+public class UsuarioResource {
 	@Autowired
 	public ApplicationEventPublisher publisher;
 
