@@ -20,6 +20,19 @@ public class Categoria extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
+	public Categoria(String nome, Integer tipo) {
+		this.nome = nome;
+		this.tipo = tipo;
+	}
+
+	public Categoria(Long id) {
+		this.id = id;
+	}
+
+	public Categoria() {
+
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -38,6 +51,11 @@ public class Categoria extends AbstractEntity<Long> {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	@Override
+	public String toString() {
+		return id.toString();
 	}
 
 }

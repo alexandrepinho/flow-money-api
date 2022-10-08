@@ -17,5 +17,7 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long>, Tra
 	public Optional<Transacao> findByIdAndUsuarioEmail(Long id, String email);
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
+	
+	public List<Transacao> findByCategoriaId(Long id);
 
 }

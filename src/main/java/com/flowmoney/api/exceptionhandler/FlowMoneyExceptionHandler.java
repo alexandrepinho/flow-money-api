@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.flowmoney.api.exceptionhandler.exception.CategoriaAssociadaTransacaoException;
+import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.ContaAssociadaTransacaoException;
+import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
+
 @ControllerAdvice
 public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -65,6 +70,35 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 
+	}
+
+	@ExceptionHandler({ CategoriaInexistenteException.class, ContaInexistenteException.class,
+			CategoriaAssociadaTransacaoException.class, ContaAssociadaTransacaoException.class,
+			CategoriaAssociadaTransacaoException.class })
+	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
+
+		String message = "";
+
+		if (ex instanceof ContaAssociadaTransacaoException) {
+			message = "conta.associada.transacao";
+		}
+
+		if (ex instanceof CategoriaAssociadaTransacaoException) {
+			message = "categoria.associada.transacao";
+		}
+
+		if (ex instanceof CategoriaInexistenteException) {
+			message = "categoria.inexistente";
+		}
+
+		if (ex instanceof ContaInexistenteException) {
+			message = "conta.inexistente";
+		}
+
+		String mensagemUsuario = messageSource.getMessage(message, null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
 	}
 
 	private List<Erro> criarListaDeErros(BindingResult bindingResult) {

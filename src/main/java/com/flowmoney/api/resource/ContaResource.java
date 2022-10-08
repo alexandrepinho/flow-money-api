@@ -3,10 +3,12 @@ package com.flowmoney.api.resource;
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flowmoney.api.dto.ContaDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Usuario;
@@ -46,37 +49,44 @@ public class ContaResource {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CONTA')")
-	public ResponseEntity<Conta> criar(@Valid @RequestBody Conta conta, HttpServletResponse response,
+	public ResponseEntity<ContaDTO> criar(@Valid @RequestBody ContaDTO contaDTO, HttpServletResponse response,
 			Authentication authentication) {
+		Conta conta = contaDTO.transformarParaEntidade();
 		atribuirUsuario(conta, authentication);
 		Conta contaSalva = contaRepository.save(conta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, contaSalva.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(contaSalva);
-
+		return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(contaSalva, ContaDTO.class));
 	}
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTA')")
-	public List<Conta> listar(Authentication authentication) {
-		return contaRepository.findByUsuarioEmail(getUserName(authentication));
+	public List<ContaDTO> listar(Authentication authentication) {
+		return contaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+			return modelMapper.map(t, ContaDTO.class);
+		}).collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTA')")
-	public ResponseEntity<Conta> buscarPeloId(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<ContaDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
 		Conta conta = contaRepository.findByIdAndUsuarioEmail(id, getUserName(authentication)).orElse(null);
-		return conta != null ? ResponseEntity.ok(conta) : ResponseEntity.notFound().build();
+		return conta != null ? ResponseEntity.ok(modelMapper.map(conta, ContaDTO.class))
+				: ResponseEntity.notFound().build();
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_ALTERAR_CONTA')")
-	public ResponseEntity<Conta> editar(@PathVariable Long id, @Valid @RequestBody Conta conta,
+	public ResponseEntity<ContaDTO> editar(@PathVariable Long id, @Valid @RequestBody ContaDTO contaDTO,
 			Authentication authentication) {
+		Conta conta = contaDTO.transformarParaEntidade();
 		atribuirUsuario(conta, authentication);
 		Conta contaSalva = contaService.atualizar(id, conta);
-		return ResponseEntity.ok(contaSalva);
+		return ResponseEntity.ok(modelMapper.map(contaSalva, ContaDTO.class));
 	}
 
 	@DeleteMapping("/{id}")

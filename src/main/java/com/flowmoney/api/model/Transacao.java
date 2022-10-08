@@ -3,6 +3,7 @@ package com.flowmoney.api.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,7 +26,7 @@ public class Transacao extends AbstractEntity<Long> {
 	private String descricao;
 
 	@NotNull
-	@JsonFormat(pattern = "dd/MM/yyyy")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
 
 	@NotNull
@@ -34,13 +35,27 @@ public class Transacao extends AbstractEntity<Long> {
 	private Categoria categoria;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "conta")
 	private Conta conta;
 
 	@ManyToOne
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
+
+	public Transacao(BigDecimal valor, Integer tipo, String descricao, LocalDate data, Long categoria, Long conta) {
+		this.valor = valor;
+		this.tipo = tipo;
+		this.descricao = descricao;
+		this.data = data;
+		this.categoria = new Categoria(categoria);
+		this.conta = new Conta(conta);
+
+	}
+
+	public Transacao() {
+
+	}
 
 	public BigDecimal getValor() {
 		return valor;

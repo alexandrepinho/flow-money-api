@@ -1,4 +1,4 @@
-package com.flowmoney.api.service.exception;
+package com.flowmoney.api.exceptionhandler.exception;
 
 public class ContaInexistenteException extends RuntimeException {
 

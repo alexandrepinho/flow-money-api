@@ -22,6 +22,18 @@ public class Conta extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
+	public Conta(BigDecimal saldo, String descricao) {
+		this.saldo = saldo;
+		this.descricao = descricao;
+	}
+
+	public Conta(Long id) {
+		this.id = id;
+	}
+
+	public Conta() {
+	}
+
 	public BigDecimal getSaldo() {
 		return saldo;
 	}
@@ -40,6 +52,28 @@ public class Conta extends AbstractEntity<Long> {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public void atualizarSaldo(BigDecimal valor, Integer tipoTransacao) {
+
+		switch (tipoTransacao) {
+		case 1: {
+			this.saldo = saldo.subtract(valor);
+			break;
+		}
+		case 2: {
+			this.saldo = saldo.add(valor);
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + tipoTransacao);
+		}
+
+	}
+
+	@Override
+	public String toString() {
+		return id.toString();
 	}
 
 }

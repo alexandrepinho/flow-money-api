@@ -16,5 +16,7 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 	public Optional<Categoria> findByIdAndUsuarioEmail(Long id, String email);
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
+	
+	public List<Categoria> findByUsuarioEmailAndTipo(String email, Integer tipo);
 
 }

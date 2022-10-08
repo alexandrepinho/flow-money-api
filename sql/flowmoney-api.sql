@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS `flowmoney-api`.`transacao` ;
 
 CREATE TABLE IF NOT EXISTS `flowmoney-api`.`transacao` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `valor` DECIMAL NOT NULL,
+  `valor` DECIMAL(10,2) NOT NULL,
   `tipo` SMALLINT(1) NOT NULL,
   `descricao` VARCHAR(100) NOT NULL,
   `data` DATE NOT NULL,

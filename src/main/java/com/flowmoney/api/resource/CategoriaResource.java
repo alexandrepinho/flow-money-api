@@ -3,10 +3,12 @@ package com.flowmoney.api.resource;
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flowmoney.api.dto.CategoriaDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Usuario;
@@ -46,43 +49,60 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService categoriaService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+	
+
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
-	public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response,
-			Authentication authentication) {
+	public ResponseEntity<CategoriaDTO> criar(@Valid @RequestBody CategoriaDTO categoriaDTO,
+			HttpServletResponse response, Authentication authentication) {
+		Categoria categoria = categoriaDTO.transformarParaEntidade();
 		atribuirUsuario(categoria, authentication);
 		Categoria categoriaSalva = categoriaRepository.save(categoria);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+		return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(categoriaSalva, CategoriaDTO.class));
 	}
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
-	public List<Categoria> listar(Authentication authentication) {
-		return categoriaRepository.findByUsuarioEmail(getUserName(authentication));
+	public List<CategoriaDTO> listar(Integer tipo, Authentication authentication) {
+		if (tipo != null) {
+			return categoriaRepository.findByUsuarioEmailAndTipo(getUserName(authentication), tipo).stream().map(t -> {
+				return modelMapper.map(t, CategoriaDTO.class);
+			}).collect(Collectors.toList());
+		}
+		return categoriaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+			return modelMapper.map(t, CategoriaDTO.class);
+		}).collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
-	public ResponseEntity<Categoria> buscarPeloId(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<CategoriaDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
 		Categoria categoria = categoriaRepository.findByIdAndUsuarioEmail(id, getUserName(authentication)).orElse(null);
-		return categoria != null ? ResponseEntity.ok(categoria) : ResponseEntity.notFound().build();
+		return categoria != null ? ResponseEntity.ok(modelMapper.map(categoria, CategoriaDTO.class))
+				: ResponseEntity.notFound().build();
 	}
-	
+
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_ALTERAR_CATEGORIA')")
-	public ResponseEntity<Categoria> editar(@PathVariable Long id, @Valid @RequestBody Categoria categoria,
+	public ResponseEntity<CategoriaDTO> editar(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO,
 			Authentication authentication) {
+		Categoria categoria = categoriaDTO.transformarParaEntidade();
 		atribuirUsuario(categoria, authentication);
 		Categoria categoriaSalva = categoriaService.atualizar(id, categoria);
-		return ResponseEntity.ok(categoriaSalva);
+		return ResponseEntity.ok(modelMapper.map(categoriaSalva, CategoriaDTO.class));
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_REMOVER_CATEGORIA')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
-		categoriaRepository.deleteByIdAndUsuarioEmail(id, getUserName(authentication));
+		Categoria categoria = categoriaRepository.findById(id).orElse(null);
+		categoriaService.verificarSeTemTransacaoAssociada(id);
+		atribuirUsuario(categoria, authentication);
+		categoriaRepository.deleteById(id);
 	}
 
 	private void atribuirUsuario(Categoria categoria, Authentication authentication) {
