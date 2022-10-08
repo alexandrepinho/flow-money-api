@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.dto.TransacaoDTO;
+import com.flowmoney.api.dto.TransacaoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Transacao;
@@ -73,33 +74,33 @@ public class TransacaoResource {
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_TRANSACAO')")
-	public Page<TransacaoDTO> pesquisar(TransacaoFilter transacaoFilter, Pageable pageable,
+	public Page<TransacaoResponseDTO> pesquisar(TransacaoFilter transacaoFilter, Pageable pageable,
 			Authentication authentication) {
 		transacaoFilter.setUsuario(usuarioRepository.findByEmail(getUserName(authentication)).orElse(null));
 		if (transacaoFilter.getUsuario() == null) {
 			return null;
 		}
 		return transacaoRepository.filtrar(transacaoFilter, pageable).map(t -> {
-			return modelMapper.map(t, TransacaoDTO.class);
+			return modelMapper.map(t, TransacaoResponseDTO.class);
 		});
 	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_TRANSACAO')")
-	public ResponseEntity<TransacaoDTO> buscarPorId(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<TransacaoResponseDTO> buscarPorId(@PathVariable Long id, Authentication authentication) {
 		Transacao transacao = transacaoRepository.findByIdAndUsuarioEmail(id, getUserName(authentication)).orElse(null);
-		return transacao != null ? ResponseEntity.ok(modelMapper.map(transacao, TransacaoDTO.class))
+		return transacao != null ? ResponseEntity.ok(modelMapper.map(transacao, TransacaoResponseDTO.class))
 				: ResponseEntity.notFound().build();
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_ALTERAR_TRANSACAO')")
-	public ResponseEntity<TransacaoDTO> editar(@PathVariable Long id, @Valid @RequestBody TransacaoDTO transacaoDTO,
-			Authentication authentication) {
+	public ResponseEntity<TransacaoResponseDTO> editar(@PathVariable Long id,
+			@Valid @RequestBody TransacaoDTO transacaoDTO, Authentication authentication) {
 		Transacao transacao = transacaoDTO.transformarParaEntidade();
 		atribuirUsuario(transacao, authentication);
 		Transacao transacaoSalva = transacaoService.atualizar(id, transacao);
-		return ResponseEntity.ok(modelMapper.map(transacaoSalva, TransacaoDTO.class));
+		return ResponseEntity.ok(modelMapper.map(transacaoSalva, TransacaoResponseDTO.class));
 	}
 
 	@DeleteMapping("/{id}")

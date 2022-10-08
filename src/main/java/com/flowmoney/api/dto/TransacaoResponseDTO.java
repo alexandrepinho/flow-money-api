@@ -6,15 +6,24 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flowmoney.api.model.Transacao;
 
-public class TransacaoDTO {
+public class TransacaoResponseDTO {
 
+	private Long id;
 	private BigDecimal valor;
 	private Integer tipo;
 	private String descricao;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
-	private IdentityDTO categoria;
-	private IdentityDTO conta;
+	private CategoriaResponseDTO categoria;
+	private ContaResponseDTO conta;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public BigDecimal getValor() {
 		return valor;
@@ -48,19 +57,19 @@ public class TransacaoDTO {
 		this.data = data;
 	}
 
-	public IdentityDTO getCategoria() {
+	public CategoriaResponseDTO getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(IdentityDTO categoria) {
+	public void setCategoria(CategoriaResponseDTO categoria) {
 		this.categoria = categoria;
 	}
 
-	public IdentityDTO getConta() {
+	public ContaResponseDTO getConta() {
 		return conta;
 	}
 
-	public void setConta(IdentityDTO conta) {
+	public void setConta(ContaResponseDTO conta) {
 		this.conta = conta;
 	}
 

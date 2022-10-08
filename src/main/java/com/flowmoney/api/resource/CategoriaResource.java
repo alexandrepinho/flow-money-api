@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.dto.CategoriaDTO;
+import com.flowmoney.api.dto.CategoriaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Usuario;
@@ -66,14 +67,14 @@ public class CategoriaResource {
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
-	public List<CategoriaDTO> listar(Integer tipo, Authentication authentication) {
+	public List<CategoriaResponseDTO> listar(Integer tipo, Authentication authentication) {
 		if (tipo != null) {
 			return categoriaRepository.findByUsuarioEmailAndTipo(getUserName(authentication), tipo).stream().map(t -> {
-				return modelMapper.map(t, CategoriaDTO.class);
+				return modelMapper.map(t, CategoriaResponseDTO.class);
 			}).collect(Collectors.toList());
 		}
 		return categoriaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
-			return modelMapper.map(t, CategoriaDTO.class);
+			return modelMapper.map(t, CategoriaResponseDTO.class);
 		}).collect(Collectors.toList());
 	}
 

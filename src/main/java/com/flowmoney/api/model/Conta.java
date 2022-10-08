@@ -27,6 +27,11 @@ public class Conta extends AbstractEntity<Long> {
 		this.descricao = descricao;
 	}
 
+	public Conta(Long id, BigDecimal saldo, String descricao) {
+		this.saldo = saldo;
+		this.descricao = descricao;
+	}
+
 	public Conta(Long id) {
 		this.id = id;
 	}

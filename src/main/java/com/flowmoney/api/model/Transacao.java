@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.flowmoney.api.dto.CategoriaResponseDTO;
+import com.flowmoney.api.dto.ContaResponseDTO;
+import com.flowmoney.api.dto.IdentityDTO;
 
 @Entity
 @Table(name = "transacao")
@@ -35,7 +38,7 @@ public class Transacao extends AbstractEntity<Long> {
 	private Categoria categoria;
 
 	@NotNull
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "conta")
 	private Conta conta;
 
@@ -43,13 +46,25 @@ public class Transacao extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
-	public Transacao(BigDecimal valor, Integer tipo, String descricao, LocalDate data, Long categoria, Long conta) {
+	public Transacao(BigDecimal valor, Integer tipo, String descricao, LocalDate data, IdentityDTO categoria,
+			IdentityDTO conta) {
 		this.valor = valor;
 		this.tipo = tipo;
 		this.descricao = descricao;
 		this.data = data;
-		this.categoria = new Categoria(categoria);
-		this.conta = new Conta(conta);
+		this.categoria = new Categoria(categoria.getId());
+		this.conta = new Conta(conta.getId());
+
+	}
+
+	public Transacao(BigDecimal valor, Integer tipo, String descricao, LocalDate data,
+			CategoriaResponseDTO categoriaResponseDTO, ContaResponseDTO contaResponseDTO) {
+		this.valor = valor;
+		this.tipo = tipo;
+		this.descricao = descricao;
+		this.data = data;
+		this.categoria = categoriaResponseDTO.transformarParaEntidade();
+		this.conta = contaResponseDTO.transformarParaEntidade();
 
 	}
 

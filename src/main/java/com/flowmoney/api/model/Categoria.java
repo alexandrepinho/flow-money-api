@@ -25,6 +25,11 @@ public class Categoria extends AbstractEntity<Long> {
 		this.tipo = tipo;
 	}
 
+	public Categoria(Long id, String nome, Integer tipo) {
+		this.nome = nome;
+		this.tipo = tipo;
+	}
+
 	public Categoria(Long id) {
 		this.id = id;
 	}

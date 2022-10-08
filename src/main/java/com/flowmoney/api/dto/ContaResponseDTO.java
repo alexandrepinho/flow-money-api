@@ -2,12 +2,11 @@ package com.flowmoney.api.dto;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flowmoney.api.model.Conta;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ContaDTO {
+public class ContaResponseDTO {
 
+	private Long id;
 	private BigDecimal saldo;
 	private String descricao;
 
@@ -27,9 +26,17 @@ public class ContaDTO {
 		this.descricao = descricao;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Conta transformarParaEntidade() {
-		
-		return new Conta(saldo,descricao);
+
+		return new Conta(id, saldo, descricao);
 	}
 
 }

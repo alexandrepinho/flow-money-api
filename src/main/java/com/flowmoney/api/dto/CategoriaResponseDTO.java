@@ -1,11 +1,10 @@
 package com.flowmoney.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flowmoney.api.model.Categoria;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoriaDTO {
+public class CategoriaResponseDTO {
 
+	private Long id;
 	private String nome;
 	private Integer tipo;
 
@@ -25,8 +24,16 @@ public class CategoriaDTO {
 		this.tipo = tipo;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Categoria transformarParaEntidade() {
-		return new Categoria(nome, tipo);
+		return new Categoria(id, nome, tipo);
 	}
 
 }

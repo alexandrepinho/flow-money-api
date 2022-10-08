@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.dto.ContaDTO;
+import com.flowmoney.api.dto.ContaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Usuario;
@@ -65,9 +66,9 @@ public class ContaResource {
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTA')")
-	public List<ContaDTO> listar(Authentication authentication) {
+	public List<ContaResponseDTO> listar(Authentication authentication) {
 		return contaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
-			return modelMapper.map(t, ContaDTO.class);
+			return modelMapper.map(t, ContaResponseDTO.class);
 		}).collect(Collectors.toList());
 	}
 
