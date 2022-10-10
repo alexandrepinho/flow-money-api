@@ -1,6 +1,8 @@
 package com.flowmoney.api.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
@@ -23,11 +25,15 @@ public class TransacaoService extends AbstractService<Transacao> {
 
 	@Autowired
 	private TransacaoRepository transacaoRepository;
-	
+
 	public Transacao salvar(Transacao transacao) {
 
 		verificarRegistrosAuxiliares(transacao);
-		transacao.getConta().atualizarSaldo(transacao.getValor(), transacao.getTipo());
+		Conta conta = contaRepository.findById(transacao.getConta().getId()).orElse(null);
+		if (conta == null) {
+			throw new EmptyResultDataAccessException(1);
+		}
+		conta.atualizarSaldo(transacao);
 		return transacaoRepository.save(transacao);
 
 	}
@@ -46,4 +52,28 @@ public class TransacaoService extends AbstractService<Transacao> {
 			throw new ContaInexistenteException();
 		}
 	}
+
+	@Override
+	public Transacao atualizar(Long id, Transacao transacao) {
+
+		Transacao transacaoSalva = transacaoRepository.findById(id).orElse(null);
+
+		if (transacaoSalva == null || transacaoSalva.getConta() == null) {
+			throw new EmptyResultDataAccessException(1);
+		}
+
+		transacaoSalva.getConta().retirarEfeitoValorTransacao(transacaoSalva);
+		if (transacao.getConta().getId() != transacaoSalva.getConta().getId()) {
+			contaRepository.save(transacaoSalva.getConta());
+		} else {
+			transacao.setConta(transacaoSalva.getConta());
+		}
+
+		transacao.getConta().atualizarSaldo(transacao);
+
+		BeanUtils.copyProperties(transacao, transacaoSalva, "id");
+		return transacaoRepository.save(transacaoSalva);
+
+	}
+
 }

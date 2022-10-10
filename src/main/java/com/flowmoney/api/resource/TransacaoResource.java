@@ -2,6 +2,8 @@ package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -21,16 +23,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flowmoney.api.dto.TotalCategoriaMesDTO;
 import com.flowmoney.api.dto.TransacaoDTO;
 import com.flowmoney.api.dto.TransacaoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
-import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Usuario;
-import com.flowmoney.api.repository.ContaRepository;
 import com.flowmoney.api.repository.TransacaoRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.repository.filter.TransacaoFilter;
@@ -53,27 +55,21 @@ public class TransacaoResource {
 	private UsuarioRepository usuarioRepository;
 
 	@Autowired
-	private ContaRepository contaRepository;
-
-	@Autowired
 	private ModelMapper modelMapper;
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_TRANSACAO')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<TransacaoDTO> criar(@Valid @RequestBody TransacaoDTO transacaoDTO,
 			HttpServletResponse response, Authentication authentication) {
 		Transacao transacao = transacaoDTO.transformarParaEntidade();
 		atribuirUsuario(transacao, authentication);
-		Conta conta = contaRepository.findById(transacao.getConta().getId()).orElse(null);
-		conta.atualizarSaldo(transacao.getValor(), transacao.getTipo());
-		transacao.setConta(conta);
 		Transacao transacaoSalva = transacaoService.salvar(transacao);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, transacaoSalva.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(transacaoSalva, TransacaoDTO.class));
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_TRANSACAO')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public Page<TransacaoResponseDTO> pesquisar(TransacaoFilter transacaoFilter, Pageable pageable,
 			Authentication authentication) {
 		transacaoFilter.setUsuario(usuarioRepository.findByEmail(getUserName(authentication)).orElse(null));
@@ -86,7 +82,7 @@ public class TransacaoResource {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_TRANSACAO')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<TransacaoResponseDTO> buscarPorId(@PathVariable Long id, Authentication authentication) {
 		Transacao transacao = transacaoRepository.findByIdAndUsuarioEmail(id, getUserName(authentication)).orElse(null);
 		return transacao != null ? ResponseEntity.ok(modelMapper.map(transacao, TransacaoResponseDTO.class))
@@ -94,7 +90,7 @@ public class TransacaoResource {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ALTERAR_TRANSACAO')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<TransacaoResponseDTO> editar(@PathVariable Long id,
 			@Valid @RequestBody TransacaoDTO transacaoDTO, Authentication authentication) {
 		Transacao transacao = transacaoDTO.transformarParaEntidade();
@@ -104,12 +100,20 @@ public class TransacaoResource {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_TRANSACAO')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
 		Transacao transacao = transacaoRepository.findById(id).orElse(null);
 		atribuirUsuario(transacao, authentication);
 		transacaoRepository.deleteById(id);
+	}
+
+	@GetMapping("/totalCategoriaMes")
+	public List<TotalCategoriaMesDTO> retornarTotalPorCategoriaMes(@RequestParam("tipoTransacao") Integer idTipoTransacao,
+			@RequestParam("mes") Integer mes, Authentication authentication) {
+		String userName = getUserName(authentication);
+		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
+		return transacaoRepository.findTotalPorMesTipoTransacao(idTipoTransacao, mes, usuario.getId());
 	}
 
 	private void atribuirUsuario(Transacao transacao, Authentication authentication) {

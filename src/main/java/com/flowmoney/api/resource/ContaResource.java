@@ -54,7 +54,7 @@ public class ContaResource {
 	private ModelMapper modelMapper;
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CONTA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<ContaDTO> criar(@Valid @RequestBody ContaDTO contaDTO, HttpServletResponse response,
 			Authentication authentication) {
 		Conta conta = contaDTO.transformarParaEntidade();
@@ -65,7 +65,7 @@ public class ContaResource {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<ContaResponseDTO> listar(Authentication authentication) {
 		return contaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
 			return modelMapper.map(t, ContaResponseDTO.class);
@@ -73,7 +73,7 @@ public class ContaResource {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<ContaDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
 		Conta conta = contaRepository.findByIdAndUsuarioEmail(id, getUserName(authentication)).orElse(null);
 		return conta != null ? ResponseEntity.ok(modelMapper.map(conta, ContaDTO.class))
@@ -81,7 +81,7 @@ public class ContaResource {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ALTERAR_CONTA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<ContaDTO> editar(@PathVariable Long id, @Valid @RequestBody ContaDTO contaDTO,
 			Authentication authentication) {
 		Conta conta = contaDTO.transformarParaEntidade();
@@ -91,7 +91,7 @@ public class ContaResource {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_CONTA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
 		contaRepository.deleteByIdAndUsuarioEmail(id, getUserName(authentication));

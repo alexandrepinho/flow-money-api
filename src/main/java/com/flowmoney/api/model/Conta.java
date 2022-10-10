@@ -59,21 +59,36 @@ public class Conta extends AbstractEntity<Long> {
 		this.usuario = usuario;
 	}
 
-	public void atualizarSaldo(BigDecimal valor, Integer tipoTransacao) {
+	public void atualizarSaldo(Transacao transacao) {
 
-		switch (tipoTransacao) {
+		switch (transacao.getTipo()) {
 		case 1: {
-			this.saldo = saldo.subtract(valor);
+			this.saldo = saldo.subtract(transacao.getValor());
 			break;
 		}
 		case 2: {
-			this.saldo = saldo.add(valor);
+			this.saldo = saldo.add(transacao.getValor());
 			break;
 		}
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + tipoTransacao);
+			throw new IllegalArgumentException("Unexpected value: " + transacao.getTipo());
 		}
 
+	}
+
+	public void retirarEfeitoValorTransacao(Transacao transacao) {
+		switch (transacao.getTipo()) {
+		case 1: {
+			this.saldo = saldo.add(transacao.getValor());
+			break;
+		}
+		case 2: {
+			this.saldo = saldo.subtract(transacao.getValor());
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + transacao.getTipo());
+		}
 	}
 
 	@Override

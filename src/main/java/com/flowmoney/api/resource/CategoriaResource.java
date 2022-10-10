@@ -55,7 +55,7 @@ public class CategoriaResource {
 	
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<CategoriaDTO> criar(@Valid @RequestBody CategoriaDTO categoriaDTO,
 			HttpServletResponse response, Authentication authentication) {
 		Categoria categoria = categoriaDTO.transformarParaEntidade();
@@ -66,7 +66,7 @@ public class CategoriaResource {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<CategoriaResponseDTO> listar(Integer tipo, Authentication authentication) {
 		if (tipo != null) {
 			return categoriaRepository.findByUsuarioEmailAndTipo(getUserName(authentication), tipo).stream().map(t -> {
@@ -79,7 +79,7 @@ public class CategoriaResource {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<CategoriaDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
 		Categoria categoria = categoriaRepository.findByIdAndUsuarioEmail(id, getUserName(authentication)).orElse(null);
 		return categoria != null ? ResponseEntity.ok(modelMapper.map(categoria, CategoriaDTO.class))
@@ -87,7 +87,7 @@ public class CategoriaResource {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ALTERAR_CATEGORIA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<CategoriaDTO> editar(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO,
 			Authentication authentication) {
 		Categoria categoria = categoriaDTO.transformarParaEntidade();
@@ -97,7 +97,7 @@ public class CategoriaResource {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_CATEGORIA')")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
 		Categoria categoria = categoriaRepository.findById(id).orElse(null);
