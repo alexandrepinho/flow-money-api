@@ -3,6 +3,8 @@ package com.flowmoney.api.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flowmoney.api.dto.CategoriaResponseDTO;
 import com.flowmoney.api.dto.ContaResponseDTO;
 import com.flowmoney.api.dto.IdentityDTO;
+import com.flowmoney.api.model.converter.TipoTransacaoConverter;
+import com.flowmoney.api.model.enumeration.TipoTransacaoEnum;
 
 @Entity
 @Table(name = "transacao")
@@ -22,7 +26,9 @@ public class Transacao extends AbstractEntity<Long> {
 	private BigDecimal valor;
 
 	@NotNull
-	private Integer tipo;
+	@Convert(converter = TipoTransacaoConverter.class)
+	@Column(name = "tipo", length = 2)
+	private TipoTransacaoEnum tipo;
 
 	@NotNull
 	private String descricao;
@@ -45,7 +51,7 @@ public class Transacao extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
-	public Transacao(BigDecimal valor, Integer tipo, String descricao, LocalDate data, IdentityDTO categoria,
+	public Transacao(BigDecimal valor, TipoTransacaoEnum tipo, String descricao, LocalDate data, IdentityDTO categoria,
 			IdentityDTO conta) {
 		this.valor = valor;
 		this.tipo = tipo;
@@ -56,7 +62,7 @@ public class Transacao extends AbstractEntity<Long> {
 
 	}
 
-	public Transacao(BigDecimal valor, Integer tipo, String descricao, LocalDate data,
+	public Transacao(BigDecimal valor, TipoTransacaoEnum tipo, String descricao, LocalDate data,
 			CategoriaResponseDTO categoriaResponseDTO, ContaResponseDTO contaResponseDTO) {
 		this.valor = valor;
 		this.tipo = tipo;
@@ -79,11 +85,11 @@ public class Transacao extends AbstractEntity<Long> {
 		this.valor = valor;
 	}
 
-	public Integer getTipo() {
+	public TipoTransacaoEnum getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(TipoTransacaoEnum tipo) {
 		this.tipo = tipo;
 	}
 

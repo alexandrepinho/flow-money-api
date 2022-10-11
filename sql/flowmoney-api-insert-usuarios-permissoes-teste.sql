@@ -1,5 +1,5 @@
 INSERT INTO usuario (id, nome, email, senha) values (1, 'Administrador', 'admin@flowmoney.com', '$2a$10$X607ZPhQ4EgGNaYKt3n4SONjIv9zc.VMWdEuhCuba7oLAL5IvcL5.');
-INSERT INTO usuario (id, nome, email, senha) values (2, 'Alexandre', 'alexandre@flowmoney.com', '$2a$10$VGjYee2NKOn5rhh.gbRT8exzLA2HT50E3Cime8WunMKJ5rBFqTzlu');
+INSERT INTO usuario (id, nome, email, senha) values (2, 'João', 'joao@flowmoney.com', '$2a$10$VGjYee2NKOn5rhh.gbRT8exzLA2HT50E3Cime8WunMKJ5rBFqTzlu');
 
 INSERT INTO permissao (id, descricao) values (1, 'CRUD_USUARIOS');
 INSERT INTO permissao (id, descricao) values (2, 'CRUD_TRANSACOES'); 

@@ -5,12 +5,13 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flowmoney.api.model.Transacao;
+import com.flowmoney.api.model.enumeration.TipoTransacaoEnum;
 
 public class TransacaoResponseDTO {
 
 	private Long id;
 	private BigDecimal valor;
-	private Integer tipo;
+	private TipoTransacaoEnum tipo;
 	private String descricao;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
@@ -33,11 +34,11 @@ public class TransacaoResponseDTO {
 		this.valor = valor;
 	}
 
-	public Integer getTipo() {
+	public TipoTransacaoEnum getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(TipoTransacaoEnum tipo) {
 		this.tipo = tipo;
 	}
 

@@ -2,12 +2,13 @@ package com.flowmoney.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flowmoney.api.model.Categoria;
+import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CategoriaDTO {
 
 	private String nome;
-	private Integer tipo;
+	private TipoCategoriaEnum tipo;
 
 	public String getNome() {
 		return nome;
@@ -17,11 +18,11 @@ public class CategoriaDTO {
 		this.nome = nome;
 	}
 
-	public Integer getTipo() {
+	public TipoCategoriaEnum getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(TipoCategoriaEnum tipo) {
 		this.tipo = tipo;
 	}
 

@@ -1,12 +1,13 @@
 package com.flowmoney.api.dto;
 
 import com.flowmoney.api.model.Categoria;
+import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
 
 public class CategoriaResponseDTO {
 
 	private Long id;
 	private String nome;
-	private Integer tipo;
+	private TipoCategoriaEnum tipo;
 
 	public String getNome() {
 		return nome;
@@ -16,11 +17,11 @@ public class CategoriaResponseDTO {
 		this.nome = nome;
 	}
 
-	public Integer getTipo() {
+	public TipoCategoriaEnum getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(TipoCategoriaEnum tipo) {
 		this.tipo = tipo;
 	}
 

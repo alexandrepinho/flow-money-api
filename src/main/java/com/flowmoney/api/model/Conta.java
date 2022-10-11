@@ -62,11 +62,11 @@ public class Conta extends AbstractEntity<Long> {
 	public void atualizarSaldo(Transacao transacao) {
 
 		switch (transacao.getTipo()) {
-		case 1: {
+		case SAIDA: {
 			this.saldo = saldo.subtract(transacao.getValor());
 			break;
 		}
-		case 2: {
+		case ENTRADA: {
 			this.saldo = saldo.add(transacao.getValor());
 			break;
 		}
@@ -78,11 +78,11 @@ public class Conta extends AbstractEntity<Long> {
 
 	public void retirarEfeitoValorTransacao(Transacao transacao) {
 		switch (transacao.getTipo()) {
-		case 1: {
+		case ENTRADA: {
 			this.saldo = saldo.add(transacao.getValor());
 			break;
 		}
-		case 2: {
+		case SAIDA: {
 			this.saldo = saldo.subtract(transacao.getValor());
 			break;
 		}
