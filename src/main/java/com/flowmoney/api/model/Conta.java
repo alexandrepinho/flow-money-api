@@ -78,11 +78,14 @@ public class Conta extends AbstractEntity<Long> {
 
 	public void retirarEfeitoValorTransacao(Transacao transacao) {
 		switch (transacao.getTipo()) {
-		case ENTRADA: {
+		// para retirar o efeito da transação
+		// faz o inverso de atualizar saldo na saída adiciona
+		// o valor da transação e na entrada remove o valor da transação
+		case SAIDA: {
 			this.saldo = saldo.add(transacao.getValor());
 			break;
 		}
-		case SAIDA: {
+		case ENTRADA: {
 			this.saldo = saldo.subtract(transacao.getValor());
 			break;
 		}

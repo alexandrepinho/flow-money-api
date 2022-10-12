@@ -3,6 +3,10 @@ package com.flowmoney.api.model.enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TipoTransacaoEnum {
 	SAIDA(1, "Saída"), ENTRADA(2, "Entrada");
 
@@ -30,6 +34,7 @@ public enum TipoTransacaoEnum {
 		return id;
 	}
 
+	@JsonValue
 	public String getDescricao() {
 		return descricao;
 	}

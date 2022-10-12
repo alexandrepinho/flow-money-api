@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.flowmoney.api.model.Categoria;
+import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
@@ -17,6 +18,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
 	
-	public List<Categoria> findByUsuarioEmailAndTipo(String email, Integer tipo);
+	public List<Categoria> findByUsuarioEmailAndTipo(String email, TipoCategoriaEnum tipo);
 
 }

@@ -30,6 +30,7 @@ import com.flowmoney.api.dto.CategoriaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Usuario;
+import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
 import com.flowmoney.api.repository.CategoriaRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.CategoriaService;
@@ -52,7 +53,6 @@ public class CategoriaResource {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
@@ -67,11 +67,13 @@ public class CategoriaResource {
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public List<CategoriaResponseDTO> listar(Integer tipo, Authentication authentication) {
+	public List<CategoriaResponseDTO> listar(String tipo, Authentication authentication) {
 		if (tipo != null) {
-			return categoriaRepository.findByUsuarioEmailAndTipo(getUserName(authentication), tipo).stream().map(t -> {
-				return modelMapper.map(t, CategoriaResponseDTO.class);
-			}).collect(Collectors.toList());
+			return categoriaRepository
+					.findByUsuarioEmailAndTipo(getUserName(authentication), TipoCategoriaEnum.valueOf(tipo)).stream()
+					.map(t -> {
+						return modelMapper.map(t, CategoriaResponseDTO.class);
+					}).collect(Collectors.toList());
 		}
 		return categoriaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
 			return modelMapper.map(t, CategoriaResponseDTO.class);
