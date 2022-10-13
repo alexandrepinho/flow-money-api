@@ -20,7 +20,7 @@ INSERT INTO categoria (nome, tipo, usuario) values ('Lazer', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values('Investimento', 2, 1);
 INSERT INTO categoria (nome, tipo, usuario) values('Prêmio', 2, 1);
 INSERT INTO categoria (nome, tipo, usuario) values('Presente', 2, 1);
-INSERT INTO categoria (nome, tipo, usuario) values('Outros', 2, 1);
+INSERT INTO categoria (nome, tipo, usuario) values('Salário', 2, 1);
 -- contas
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 1', 3000, 1);
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 2', 2000, 1);
@@ -56,7 +56,7 @@ INSERT INTO categoria (nome, tipo, usuario) values ('Viagem', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values('Investimento', 2, 3);
 INSERT INTO categoria (nome, tipo, usuario) values('Prêmio', 2, 3);
 INSERT INTO categoria (nome, tipo, usuario) values('Presente', 2, 3);
-INSERT INTO categoria (nome, tipo, usuario) values('Outros', 2, 3);
+INSERT INTO categoria (nome, tipo, usuario) values('Salário', 2, 3);
 -- contas
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 1', 3000, 3);
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 2', 2000, 3);
