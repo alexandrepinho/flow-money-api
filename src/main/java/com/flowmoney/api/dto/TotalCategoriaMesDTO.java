@@ -3,6 +3,7 @@ package com.flowmoney.api.dto;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.flowmoney.api.model.enumeration.TipoTransacaoEnum;
 
 public class TotalCategoriaMesDTO {
 
@@ -12,11 +13,11 @@ public class TotalCategoriaMesDTO {
 	@JsonFormat(pattern = "MM")
 	private Integer mes;
 
-	public TotalCategoriaMesDTO(BigDecimal valor, String categoria, Long tipoTransacao, Integer mes) {
+	public TotalCategoriaMesDTO(BigDecimal valor, String categoria, TipoTransacaoEnum tipoTransacao, Integer mes) {
 
 		this.valor = valor;
 		this.categoria = categoria;
-		this.tipoTransacao = tipoTransacao.intValue();
+		this.tipoTransacao = tipoTransacao.getId();
 		this.mes = mes;
 	}
 

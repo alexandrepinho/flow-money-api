@@ -24,7 +24,7 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long>, Tra
 
 	public List<Transacao> findByCategoriaId(Long id);
 
-	@Query(value="SELECT new com.flowmoney.api.dto.TotalCategoriaMesDTO(SUM(t.valor),t.categoria.nome, t.tipo.id,MONTH(t.data)) FROM Transacao t where t.tipo=:tipoTransacao and MONTH(t.data)=:mes and t.usuario.id=:usuario GROUP BY t.categoria.id")
+	@Query(value="SELECT new com.flowmoney.api.dto.TotalCategoriaMesDTO(SUM(t.valor),t.categoria.nome, t.tipo,MONTH(t.data)) FROM Transacao t where t.tipo=:tipoTransacao and MONTH(t.data)=:mes and t.usuario.id=:usuario GROUP BY t.categoria.id")
 	public List<TotalCategoriaMesDTO> findTotalPorMesTipoTransacao(@Param("tipoTransacao")TipoTransacaoEnum tipoTransacao, @Param("mes")Integer mes, @Param("usuario")Long usuario);
 
 }

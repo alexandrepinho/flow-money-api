@@ -42,7 +42,7 @@ INSERT INTO categoria (nome, tipo, usuario) values ('Lazer', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values('Investimento', 2, 2);
 INSERT INTO categoria (nome, tipo, usuario) values('Prêmio', 2, 2);
 INSERT INTO categoria (nome, tipo, usuario) values('Presente', 2, 2);
-INSERT INTO categoria (nome, tipo, usuario) values('Outros', 2, 2);
+INSERT INTO categoria (nome, tipo, usuario) values('Salário', 2, 2);
 -- contas
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 1', 3000, 2);
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 2', 2000, 2);
