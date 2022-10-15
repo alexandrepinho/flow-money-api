@@ -35,3 +35,5 @@ Usando o maven
 Usando Java
 
 - `java -jar target/flowmoney-api-1.0.0-SNAPSHOT.jar`
+
+-Iniciará por padrão em localhost:8080
