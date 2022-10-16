@@ -34,7 +34,6 @@ import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Usuario;
-import com.flowmoney.api.model.enumeration.TipoTransacaoEnum;
 import com.flowmoney.api.repository.ContaRepository;
 import com.flowmoney.api.repository.TransacaoRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
@@ -56,7 +55,7 @@ public class TransacaoResource {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-	
+
 	@Autowired
 	private ContaRepository contaRepository;
 
@@ -118,11 +117,11 @@ public class TransacaoResource {
 	}
 
 	@GetMapping("/totalCategoriaMes")
-	public List<TotalCategoriaMesDTO> retornarTotalPorCategoriaMes(@RequestParam("tipoTransacao") String tipoTransacao,
-			@RequestParam("mes") Integer mes, Authentication authentication) {
+	public List<TotalCategoriaMesDTO> retornarTotalPorCategoriaMes(@RequestParam("mes") Integer mes,
+			Authentication authentication) {
 		String userName = getUserName(authentication);
 		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
-		return transacaoRepository.findTotalPorMesTipoTransacao(TipoTransacaoEnum.valueOf(tipoTransacao), mes, usuario.getId());
+		return transacaoRepository.findTotalPorMesTipoTransacao(mes, usuario.getId());
 	}
 
 	private void atribuirUsuario(Transacao transacao, Authentication authentication) {
