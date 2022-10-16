@@ -9,8 +9,8 @@ INSERT INTO permissao (id, descricao) values (2, 'CRUD_TRANSACOES');
 -- 3 perfis -  administrador com acesso para cadastrar novos usuários e 2 usuários comuns sem gerencia de outros usuários mas com gerencia das suas transações
 
 -- Admin PERMISSÃO DE CADASTRO DE TRANSAÇÕES E USUÁRIOS
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 1);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 2);
+INSERT INTO usuario_permissao (usuario, permissao) values (1, 1);
+INSERT INTO usuario_permissao (usuario, permissao) values (1, 2);
 -- tipo saídas
 INSERT INTO categoria (nome, tipo, usuario) values ('Casa', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Educação', 1, 1);
@@ -26,10 +26,10 @@ INSERT INTO conta (descricao, saldo, usuario) values('Conta 1', 3000, 1);
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 2', 2000, 1);
 
 -- João PERMISSÃO SOMENTE DE CADASTRO DE TRANSAÇÕES
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 2);
+INSERT INTO usuario_permissao (usuario, permissao) values (2, 2);
 
 -- Maria PERMISSÃO SOMENTE DE CADASTRO DE TRANSAÇÕES
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (3, 2);
+INSERT INTO usuario_permissao (usuario, permissao) values (3, 2);
 
 -- Cadastros para teste de categorias------------------------------------
 -- João 
