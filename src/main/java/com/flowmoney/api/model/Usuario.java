@@ -25,8 +25,8 @@ public class Usuario extends AbstractEntity<Long> {
 	private String senha;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "usuario_permissao", joinColumns = { @JoinColumn(name = "usuario_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "permissao_id") })
+	@JoinTable(name = "usuario_permissao", joinColumns = { @JoinColumn(name = "usuario") }, inverseJoinColumns = {
+			@JoinColumn(name = "permissao") })
 	private List<Permissao> permissoes = new ArrayList<>();
 
 	public String getNome() {
