@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.event.RecursoCriadoEvent;
+import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Usuario;
+import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
+import com.flowmoney.api.repository.CategoriaRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.UsuarioService;
 
@@ -37,10 +40,26 @@ public class UsuarioResource {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_USUARIO')")
+	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	public ResponseEntity<Usuario> criar(@Valid @RequestBody Usuario usuario, HttpServletResponse response) {
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
+		Categoria reajusteEntrada = new Categoria();
+		reajusteEntrada.setNome("Reajuste Entrada");
+		reajusteEntrada.setTipo(TipoCategoriaEnum.ENTRADA);
+		reajusteEntrada.setUsuario(usuarioSalvo);
+
+		Categoria reajusteSaida = new Categoria();
+		reajusteSaida.setNome("Reajuste Saída");
+		reajusteSaida.setTipo(TipoCategoriaEnum.SAIDA);
+		reajusteSaida.setUsuario(usuarioSalvo);
+
+		categoriaRepository.save(reajusteEntrada);
+		categoriaRepository.save(reajusteSaida);
 
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, usuarioSalvo.getId()));
 
@@ -49,27 +68,27 @@ public class UsuarioResource {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_USUARIO')")
+	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	public List<Usuario> listar() {
 		return usuarioRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_USUARIO')")
+	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	public ResponseEntity<Usuario> buscarPeloId(@PathVariable Long id) {
 		Usuario usuario = usuarioRepository.findById(id).orElse(null);
 		return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_USUARIO')")
+	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id) {
 		usuarioRepository.deleteById(id);
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ALTERAR_USUARIO')")
+	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	public ResponseEntity<Usuario> editar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
 		Usuario usuarioSalvo = usuarioService.atualizar(id, usuario);
 		return ResponseEntity.ok(usuarioSalvo);

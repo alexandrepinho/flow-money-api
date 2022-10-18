@@ -71,6 +71,7 @@ public class CategoriaResource {
 		if (tipo != null) {
 			return categoriaRepository
 					.findByUsuarioEmailAndTipo(getUserName(authentication), TipoCategoriaEnum.valueOf(tipo)).stream()
+					.filter(c -> !c.getNome().contains("Reajuste Entrada") && !c.getNome().contains("Reajuste Saída"))
 					.map(t -> {
 						return modelMapper.map(t, CategoriaResponseDTO.class);
 					}).collect(Collectors.toList());

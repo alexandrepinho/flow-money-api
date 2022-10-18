@@ -12,11 +12,13 @@ INSERT INTO permissao (id, descricao) values (2, 'CRUD_TRANSACOES');
 INSERT INTO usuario_permissao (usuario, permissao) values (1, 1);
 INSERT INTO usuario_permissao (usuario, permissao) values (1, 2);
 -- tipo saídas
+INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Saída', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Casa', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Educação', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Eletrônicos', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Lazer', 1, 1);
 -- tipo entradas
+INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Entrada', 2, 1);
 INSERT INTO categoria (nome, tipo, usuario) values('Investimento', 2, 1);
 INSERT INTO categoria (nome, tipo, usuario) values('Prêmio', 2, 1);
 INSERT INTO categoria (nome, tipo, usuario) values('Presente', 2, 1);
@@ -34,11 +36,13 @@ INSERT INTO usuario_permissao (usuario, permissao) values (3, 2);
 -- Cadastros para teste de categorias------------------------------------
 -- João 
 -- tipo saídas
+INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Saída', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values ('Casa', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values ('Educação', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values ('Eletrônicos', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values ('Lazer', 1, 2);
 -- tipo entradas
+INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Entrada', 2, 2);
 INSERT INTO categoria (nome, tipo, usuario) values('Investimento', 2, 2);
 INSERT INTO categoria (nome, tipo, usuario) values('Prêmio', 2, 2);
 INSERT INTO categoria (nome, tipo, usuario) values('Presente', 2, 2);
@@ -48,11 +52,13 @@ INSERT INTO conta (descricao, saldo, usuario) values('Conta 1', 3000, 2);
 INSERT INTO conta (descricao, saldo, usuario) values('Conta 2', 2000, 2);
 
 -- Maria - tipo saídas
+INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Saída', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values ('Supermercado', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values ('Transporte', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values ('Vestuário', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values ('Viagem', 1, 3);
 -- tipo entradas
+INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Entrada', 2, 3);
 INSERT INTO categoria (nome, tipo, usuario) values('Investimento', 2, 3);
 INSERT INTO categoria (nome, tipo, usuario) values('Prêmio', 2, 3);
 INSERT INTO categoria (nome, tipo, usuario) values('Presente', 2, 3);

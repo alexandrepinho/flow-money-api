@@ -59,6 +59,10 @@ public class Conta extends AbstractEntity<Long> {
 		this.usuario = usuario;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
 	public void atualizarSaldo(Transacao transacao) {
 
 		switch (transacao.getTipo()) {
