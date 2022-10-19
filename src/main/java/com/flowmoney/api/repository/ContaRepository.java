@@ -11,7 +11,7 @@ import com.flowmoney.api.model.Conta;
 @Repository
 public interface ContaRepository extends JpaRepository<Conta, Long>{
 	
-	public List<Conta> findByUsuarioEmail(String email);
+	public List<Conta> findByUsuarioEmailAndArquivada(String email, boolean arquivada);
 
 	public Optional<Conta> findByIdAndUsuarioEmail(Long id, String email);
 

@@ -22,6 +22,8 @@ public class Conta extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
+	private boolean arquivada;
+
 	public Conta(BigDecimal saldo, String descricao) {
 		this.saldo = saldo;
 		this.descricao = descricao;
@@ -78,6 +80,14 @@ public class Conta extends AbstractEntity<Long> {
 			throw new IllegalArgumentException("Unexpected value: " + transacao.getTipo());
 		}
 
+	}
+
+	public boolean isArquivada() {
+		return arquivada;
+	}
+
+	public void setArquivada(boolean arquivada) {
+		this.arquivada = arquivada;
 	}
 
 	public void retirarEfeitoValorTransacao(Transacao transacao) {

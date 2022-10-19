@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`conta` (
   `descricao` VARCHAR(100) NOT NULL,
   `saldo` DECIMAL(10,2) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
+  `arquivada` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `usuario`),
   INDEX `fk_conta_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_conta_usuario1`

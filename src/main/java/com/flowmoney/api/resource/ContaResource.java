@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flowmoney.api.dto.CategoriaDTO;
 import com.flowmoney.api.dto.ContaDTO;
 import com.flowmoney.api.dto.ContaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
@@ -76,7 +77,7 @@ public class ContaResource {
 	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<ContaResponseDTO> listar(Authentication authentication) {
-		return contaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+		return contaRepository.findByUsuarioEmailAndArquivada(getUserName(authentication), false).stream().map(t -> {
 			return modelMapper.map(t, ContaResponseDTO.class);
 		}).collect(Collectors.toList());
 	}
@@ -110,11 +111,21 @@ public class ContaResource {
 			transacaoReajuste.setUsuario(conta.getUsuario());
 
 			if (contaSalva.getSaldo().compareTo(conta.getSaldo()) > 0) {
-				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(1)));//TODO POR ENQUANTO NO SCRIPT DE TESTES, MAS JÁ INCLUIDO NO CREATE RESOURCE COMO ID 1
-				transacaoReajuste.setTipo(TipoTransacaoEnum.SAIDA);
+				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(1)));
+				transacaoReajuste.setTipo(TipoTransacaoEnum.SAIDA);// TODO - TODA VEZ QUE CADASTRAR UM
+																	// USUÁRIO É FEITO UM PRIMEIRO INSERT
+																	// DESSE TIPO DE CATEGORIA PARA QUANDO
+																	// OCORRER AJUSTE DE VALOR EM CONTA SER
+																	// FEITA UMA TRANSAÇÃO COM ESSA
+																	// CATEGORIA
 				transacaoReajuste.setValor(contaSalva.getSaldo().subtract(conta.getSaldo()));
 			} else if (contaSalva.getSaldo().compareTo(conta.getSaldo()) < 0) {
-				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(2)));//TODO POR ENQUANTO NO SCRIPT DE TESTES, MAS JÁ INCLUIDO NO CREATE RESOURCE COMO ID 2
+				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(2)));// TODO - TODA VEZ QUE CADASTRAR UM
+																				// USUÁRIO É FEITO UM SEGUNDO INSERT
+																				// DESSE TIPO DE CATEGORIA PARA QUANDO
+																				// OCORRER AJUSTE DE VALOR EM CONTA
+																				// SERFEITA UMA TRANSAÇÃO COM ESSA
+																				// CATEGORIA
 				transacaoReajuste.setTipo(TipoTransacaoEnum.ENTRADA);
 				transacaoReajuste.setValor(conta.getSaldo().subtract(contaSalva.getSaldo()));
 			}
@@ -130,8 +141,11 @@ public class ContaResource {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long id, Authentication authentication) {
-		contaRepository.deleteByIdAndUsuarioEmail(id, getUserName(authentication));
+	public void arquivar(@PathVariable Long id, Authentication authentication) {
+		Conta conta = contaRepository.findById(id).orElse(null);
+		conta.setArquivada(true);
+		atribuirUsuario(conta, authentication);
+		contaService.atualizar(id, conta);
 	}
 
 	private void atribuirUsuario(Conta conta, Authentication authentication) {
