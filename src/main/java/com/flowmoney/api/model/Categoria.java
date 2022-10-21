@@ -27,6 +27,8 @@ public class Categoria extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
+	private boolean arquivada;
+
 	public Categoria(String nome, TipoCategoriaEnum tipo) {
 		this.nome = nome;
 		this.tipo = tipo;
@@ -63,6 +65,14 @@ public class Categoria extends AbstractEntity<Long> {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public boolean isArquivada() {
+		return arquivada;
+	}
+
+	public void setArquivada(boolean arquivada) {
+		this.arquivada = arquivada;
 	}
 
 	@Override

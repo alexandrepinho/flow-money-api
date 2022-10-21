@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`categoria` (
   `nome` VARCHAR(50) NOT NULL,
   `tipo` SMALLINT(1) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
+  `arquivada` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `usuario`),
   INDEX `fk_categoria_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_categoria_usuario1`
@@ -119,6 +120,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`transacao` (
   `categoria` BIGINT(20) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
   `conta` BIGINT(20) NOT NULL,
+  `efetuada` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `categoria`, `usuario`, `conta`),
   INDEX `fk_transacao_categoria1_idx` (`categoria` ASC) VISIBLE,
   INDEX `fk_transacao_usuario1_idx` (`usuario` ASC) VISIBLE,

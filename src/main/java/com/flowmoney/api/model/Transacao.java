@@ -37,6 +37,8 @@ public class Transacao extends AbstractEntity<Long> {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
 
+	private boolean efetuada;
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "categoria")
@@ -127,6 +129,14 @@ public class Transacao extends AbstractEntity<Long> {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public boolean isEfetuada() {
+		return efetuada;
+	}
+
+	public void setEfetuada(boolean efetuada) {
+		this.efetuada = efetuada;
 	}
 
 }
