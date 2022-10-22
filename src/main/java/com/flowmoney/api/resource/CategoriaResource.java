@@ -28,10 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flowmoney.api.dto.CategoriaDTO;
 import com.flowmoney.api.dto.CategoriaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
+import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
 import com.flowmoney.api.model.Categoria;
+import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Usuario;
 import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
 import com.flowmoney.api.repository.CategoriaRepository;
+import com.flowmoney.api.repository.ContaRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.CategoriaService;
 
@@ -50,6 +53,9 @@ public class CategoriaResource {
 
 	@Autowired
 	private CategoriaService categoriaService;
+	
+	@Autowired
+	private ContaRepository contaRepository;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -81,6 +87,24 @@ public class CategoriaResource {
 		}).collect(Collectors.toList());
 	}
 
+	@GetMapping("/nao-arquivada")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	public List<CategoriaResponseDTO> listarNaoArquivada(String tipo, Authentication authentication) {
+		if (tipo != null) {
+			return categoriaRepository
+					.findByUsuarioEmailAndTipoAndArquivada(getUserName(authentication), TipoCategoriaEnum.valueOf(tipo),
+							false)
+					.stream()
+					.filter(c -> !c.getNome().contains("Reajuste Entrada") && !c.getNome().contains("Reajuste Saída"))
+					.map(t -> {
+						return modelMapper.map(t, CategoriaResponseDTO.class);
+					}).collect(Collectors.toList());
+		}
+		return categoriaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+			return modelMapper.map(t, CategoriaResponseDTO.class);
+		}).collect(Collectors.toList());
+	}
+
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<CategoriaDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
@@ -99,14 +123,34 @@ public class CategoriaResource {
 		return ResponseEntity.ok(modelMapper.map(categoriaSalva, CategoriaDTO.class));
 	}
 
+	@DeleteMapping("/arquiva/{id}")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void arquivar(@PathVariable Long id, Authentication authentication) {
+		Categoria categoria = categoriaRepository.findById(id).orElse(null);
+		categoria.setArquivada(true);
+		atribuirUsuario(categoria, authentication);
+		categoriaService.atualizar(id, categoria);
+	}
+
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
-		Categoria categoria = categoriaRepository.findById(id).orElse(null);
-		categoriaService.verificarSeTemTransacaoAssociada(id);
-		atribuirUsuario(categoria, authentication);
-		categoriaRepository.deleteById(id);
+		Categoria categoria = categoriaRepository
+				.findByIdAndUsuarioEmailFetchTransacoes(id, getUserName(authentication)).orElse(null);
+		
+		if (categoria == null) {
+			throw new CategoriaInexistenteException();
+		}
+		
+		for (Transacao transacao : categoria.getTransacoes()) {
+			transacao.getConta().retirarEfeitoValorTransacao(transacao);
+			contaRepository.save(transacao.getConta());
+		}
+
+		categoriaRepository.delete(categoria);
+
 	}
 
 	private void atribuirUsuario(Categoria categoria, Authentication authentication) {

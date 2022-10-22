@@ -8,6 +8,7 @@ public class CategoriaResponseDTO {
 	private Long id;
 	private String nome;
 	private TipoCategoriaEnum tipo;
+	private boolean arquivada;
 
 	public String getNome() {
 		return nome;
@@ -31,6 +32,14 @@ public class CategoriaResponseDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public boolean isArquivada() {
+		return arquivada;
+	}
+
+	public void setArquivada(boolean arquivada) {
+		this.arquivada = arquivada;
 	}
 
 	public Categoria transformarParaEntidade() {

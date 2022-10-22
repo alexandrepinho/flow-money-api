@@ -18,7 +18,7 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
 
 	public Optional<Conta> findByIdAndUsuarioEmail(Long id, String email);
 
-	@Query(value = "SELECT c FROM Conta c JOIN FETCH c.transacoes t WHERE c.id=:id AND c.usuario.email=:email")
+	@Query(value = "SELECT c FROM Conta c LEFT JOIN FETCH c.transacoes t JOIN c.usuario u WHERE c.id=:id AND u.email=:email")
 	public Optional<Conta> findByIdAndUsuarioEmailFetchTransacoes(Long id, String email);
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
