@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`categoria` (
   `tipo` SMALLINT(1) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
   `arquivada` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`, `usuario`),
+  PRIMARY KEY (`id`),
   INDEX `fk_categoria_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_categoria_usuario1`
     FOREIGN KEY (`usuario`)
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`conta` (
   `saldo` DECIMAL(10,2) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
   `arquivada` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`, `usuario`),
+  PRIMARY KEY (`id`),
   INDEX `fk_conta_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_conta_usuario1`
     FOREIGN KEY (`usuario`)
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`transacao` (
   `usuario` BIGINT(20) NOT NULL,
   `conta` BIGINT(20) NOT NULL,
   `efetuada` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`, `categoria`, `usuario`, `conta`),
+  PRIMARY KEY (`id`),
   INDEX `fk_transacao_categoria1_idx` (`categoria` ASC) VISIBLE,
   INDEX `fk_transacao_usuario1_idx` (`usuario` ASC) VISIBLE,
   INDEX `fk_transacao_conta1_idx` (`conta` ASC) VISIBLE,
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`cartao_credito` (
   `data_fechamento` DATE NOT NULL,
   `data_vencimento` DATE NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`, `usuario`),
+  PRIMARY KEY (`id`),
   INDEX `fk_cartao_credito_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_cartao_credito_usuario1`
     FOREIGN KEY (`usuario`)
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
   `pago` TINYINT(1) NOT NULL DEFAULT 0,
   `data_pagamento` DATE NULL,
   `conta` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`, `conta`),
+  PRIMARY KEY (`id`),
   INDEX `fk_fatura_conta1_idx` (`conta` ASC) VISIBLE,
   CONSTRAINT `fk_fatura_conta1`
     FOREIGN KEY (`conta`)
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`lancamento_fatura` (
   `cartao_credito` BIGINT(20) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
   `categoria` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`, `fatura`, `cartao_credito`, `usuario`, `categoria`),
+  PRIMARY KEY (`id`),
   INDEX `fk_lancamento_fatura_fatura1_idx` (`fatura` ASC) VISIBLE,
   INDEX `fk_lancamento_fatura_cartao_credito1_idx` (`cartao_credito` ASC) VISIBLE,
   INDEX `fk_lancamento_fatura_usuario1_idx` (`usuario` ASC) VISIBLE,
@@ -242,7 +242,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`objetivo` (
   `valor_inicial` DECIMAL(10,2) NOT NULL,
   `valor_restante` DECIMAL(10,2) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`, `usuario`),
+  PRIMARY KEY (`id`),
   INDEX `fk_objetivo_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_objetivo_usuario1`
     FOREIGN KEY (`usuario`)
@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`planejamento` (
   `data_inicial` DATE NOT NULL,
   `data_final` VARCHAR(45) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`, `usuario`),
+  PRIMARY KEY (`id`),
   INDEX `fk_planejamento_usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_planejamento_usuario1`
     FOREIGN KEY (`usuario`)
@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`planejamento_categoria` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `valor` DECIMAL(10,2) NOT NULL,
   `categoria` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`, `categoria`),
+  PRIMARY KEY (`id`),
   INDEX `fk_planejamento_categoria_categoria1_idx` (`categoria` ASC) VISIBLE,
   CONSTRAINT `fk_planejamento_categoria_categoria1`
     FOREIGN KEY (`categoria`)

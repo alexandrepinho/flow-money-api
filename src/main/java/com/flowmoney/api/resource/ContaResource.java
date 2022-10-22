@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flowmoney.api.dto.ContaDTO;
 import com.flowmoney.api.dto.ContaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
+import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Transacao;
@@ -76,6 +77,14 @@ public class ContaResource {
 	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<ContaResponseDTO> listar(Authentication authentication) {
+		return contaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+			return modelMapper.map(t, ContaResponseDTO.class);
+		}).collect(Collectors.toList());
+	}
+
+	@GetMapping("/nao-arquivada")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	public List<ContaResponseDTO> listarNaoArquivada(Authentication authentication) {
 		return contaRepository.findByUsuarioEmailAndArquivada(getUserName(authentication), false).stream().map(t -> {
 			return modelMapper.map(t, ContaResponseDTO.class);
 		}).collect(Collectors.toList());
@@ -137,7 +146,7 @@ public class ContaResource {
 		return ResponseEntity.ok(modelMapper.map(contaSalva, ContaDTO.class));
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/arquiva/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void arquivar(@PathVariable Long id, Authentication authentication) {
@@ -145,6 +154,20 @@ public class ContaResource {
 		conta.setArquivada(true);
 		atribuirUsuario(conta, authentication);
 		contaService.atualizar(id, conta);
+	}
+
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void remover(@PathVariable Long id, Authentication authentication) {
+		Conta conta = contaRepository.findByIdAndUsuarioEmailFetchTransacoes(id, getUserName(authentication))
+				.orElse(null);
+		if (conta == null) {
+			throw new ContaInexistenteException();
+		}
+
+		contaRepository.delete(conta);
+
 	}
 
 	private void atribuirUsuario(Conta conta, Authentication authentication) {

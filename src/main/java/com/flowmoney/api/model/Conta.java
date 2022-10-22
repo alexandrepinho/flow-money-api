@@ -1,10 +1,15 @@
 package com.flowmoney.api.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +26,9 @@ public class Conta extends AbstractEntity<Long> {
 	@ManyToOne
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
+
+	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Transacao> transacoes = new ArrayList<>();
 
 	private boolean arquivada;
 
@@ -63,6 +71,14 @@ public class Conta extends AbstractEntity<Long> {
 
 	public Usuario getUsuario() {
 		return usuario;
+	}
+
+	public List<Transacao> getTransacoes() {
+		return transacoes;
+	}
+
+	public void setTransacoes(List<Transacao> transacoes) {
+		this.transacoes = transacoes;
 	}
 
 	public void atualizarSaldo(Transacao transacao) {

@@ -9,6 +9,7 @@ public class ContaResponseDTO {
 	private Long id;
 	private BigDecimal saldo;
 	private String descricao;
+	private boolean arquivada;
 
 	public BigDecimal getSaldo() {
 		return saldo;
@@ -32,6 +33,14 @@ public class ContaResponseDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public boolean isArquivada() {
+		return arquivada;
+	}
+
+	public void setArquivada(boolean arquivada) {
+		this.arquivada = arquivada;
 	}
 
 	public Conta transformarParaEntidade() {
