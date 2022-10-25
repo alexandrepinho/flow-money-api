@@ -3,11 +3,13 @@ package com.flowmoney.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +30,15 @@ public class Usuario extends AbstractEntity<Long> {
 	@JoinTable(name = "usuario_permissao", joinColumns = { @JoinColumn(name = "usuario") }, inverseJoinColumns = {
 			@JoinColumn(name = "permissao") })
 	private List<Permissao> permissoes = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
+	private List<Transacao> transacoes = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
+	private List<Categoria> categorias = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
+	private List<Conta> contas = new ArrayList<>();
 
 	public String getNome() {
 		return nome;

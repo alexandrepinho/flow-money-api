@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +44,18 @@ public class UsuarioResource {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
+	@Autowired
+	private final PasswordEncoder encoder;
+
+	UsuarioResource(PasswordEncoder encode) {
+		this.encoder = encode;
+
+	}
+
 	@PostMapping
 	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	public ResponseEntity<Usuario> criar(@Valid @RequestBody Usuario usuario, HttpServletResponse response) {
+		usuario.setSenha(encoder.encode(usuario.getSenha()));
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
 		Categoria reajusteEntrada = new Categoria();
@@ -90,6 +100,7 @@ public class UsuarioResource {
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_USUARIOS')")
 	public ResponseEntity<Usuario> editar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
+		usuario.setSenha(encoder.encode(usuario.getSenha()));
 		Usuario usuarioSalvo = usuarioService.atualizar(id, usuario);
 		return ResponseEntity.ok(usuarioSalvo);
 	}
