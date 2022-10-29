@@ -283,11 +283,18 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`planejamento_categoria` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `valor` DECIMAL(10,2) NOT NULL,
   `categoria` BIGINT(20) NOT NULL,
+  `planejamento` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_planejamento_categoria_categoria1_idx` (`categoria` ASC) VISIBLE,
+  INDEX `fk_planejamento_categoria_planejamento1_idx` (`planejamento` ASC) VISIBLE,
   CONSTRAINT `fk_planejamento_categoria_categoria1`
     FOREIGN KEY (`categoria`)
     REFERENCES `flowmoney-api`.`categoria` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_planejamento_categoria_planejamento1`
+    FOREIGN KEY (`planejamento`)
+    REFERENCES `flowmoney-api`.`planejamento` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
