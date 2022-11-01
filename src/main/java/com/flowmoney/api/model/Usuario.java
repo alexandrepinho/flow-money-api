@@ -43,6 +43,15 @@ public class Usuario extends AbstractEntity<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
 	private List<Planejamento> planejamentos = new ArrayList<>();
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
+	private List<Objetivo> objetivos = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
+	private List<CartaoCredito> cartoes = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
+	private List<LancamentoFatura> lancamentos = new ArrayList<>();
+
 	public String getNome() {
 		return nome;
 	}

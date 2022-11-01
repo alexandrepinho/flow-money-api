@@ -30,6 +30,9 @@ public class Conta extends AbstractEntity<Long> {
 	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Transacao> transacoes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Fatura> faturas = new ArrayList<>();
+
 	private boolean arquivada;
 
 	public Conta(BigDecimal saldo, String descricao) {
@@ -79,6 +82,14 @@ public class Conta extends AbstractEntity<Long> {
 
 	public void setTransacoes(List<Transacao> transacoes) {
 		this.transacoes = transacoes;
+	}
+
+	public List<Fatura> getFaturas() {
+		return faturas;
+	}
+
+	public void setFaturas(List<Fatura> faturas) {
+		this.faturas = faturas;
 	}
 
 	public void atualizarSaldo(Transacao transacao) {

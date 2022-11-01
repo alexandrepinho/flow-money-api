@@ -38,7 +38,7 @@ public abstract class AbstractEntity<I extends Serializable> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		AbstractEntity<?> other = (AbstractEntity<?>) obj;
 		return Objects.equals(id, other.id);
 	}
 

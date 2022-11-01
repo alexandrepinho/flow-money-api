@@ -35,6 +35,8 @@ public class Categoria extends AbstractEntity<Long> {
 	private Usuario usuario;
 	@OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Transacao> transacoes = new ArrayList<>();
+	@OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<LancamentoFatura> lancamentos = new ArrayList<>();
 
 	private boolean arquivada;
 
