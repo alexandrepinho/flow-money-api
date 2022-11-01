@@ -7,30 +7,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class FlowMoneyProperty {
 
-	private String originPermitida = "http://localhost:4200";
+	private String origin = "http://localhost:4200";
 	private final Seguranca seguranca = new Seguranca();
 
 	public Seguranca getSeguranca() {
 		return seguranca;
 	}
 
-	public String getOriginPermitida() {
-		return originPermitida;
+	public String getOrigin() {
+		return origin;
 	}
 
-	public void setOriginPermitida(String originPermitida) {
-		this.originPermitida = originPermitida;
+	public void setOrigin(String origin) {
+		this.origin = origin;
 	}
 
 	public static class Seguranca {
-		private boolean enableHttps;
+		private boolean https;
 
-		public boolean isEnableHttps() {
-			return enableHttps;
+		public boolean isHttps() {
+			return https;
 		}
 
-		public void setEnableHttps(boolean enableHttps) {
-			this.enableHttps = enableHttps;
+		public void setHttps(boolean https) {
+			this.https = https;
 		}
 
 	}
