@@ -28,6 +28,21 @@ public class Objetivo extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
+	public Objetivo(String nome, BigDecimal valor, BigDecimal valorInicial, BigDecimal valorRestante) {
+		this.nome = nome;
+		this.valor = valor;
+		this.valorInicial = valorInicial;
+		this.valorRestante = valorRestante;
+	}
+
+	public Objetivo(Long id, String nome, BigDecimal valor, BigDecimal valorInicial, BigDecimal valorRestante) {
+		this.id = id;
+		this.nome = nome;
+		this.valor = valor;
+		this.valorInicial = valorInicial;
+		this.valorRestante = valorRestante;
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -58,6 +73,14 @@ public class Objetivo extends AbstractEntity<Long> {
 
 	public void setValorRestante(BigDecimal valorRestante) {
 		this.valorRestante = valorRestante;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }
