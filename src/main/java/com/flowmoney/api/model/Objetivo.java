@@ -43,6 +43,10 @@ public class Objetivo extends AbstractEntity<Long> {
 		this.valorRestante = valorRestante;
 	}
 
+	public Objetivo() {
+
+	}
+
 	public String getNome() {
 		return nome;
 	}

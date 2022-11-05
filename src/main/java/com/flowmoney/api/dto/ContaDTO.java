@@ -2,13 +2,17 @@ package com.flowmoney.api.dto;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flowmoney.api.model.Conta;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContaDTO {
 
+	@NotNull
 	private BigDecimal saldo;
+	@NotNull
 	private String descricao;
 
 	public BigDecimal getSaldo() {

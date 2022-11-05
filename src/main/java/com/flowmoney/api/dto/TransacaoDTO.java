@@ -3,18 +3,26 @@ package com.flowmoney.api.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.enumeration.TipoTransacaoEnum;
 
 public class TransacaoDTO {
 
+	@NotNull
 	private BigDecimal valor;
+	@NotNull
 	private TipoTransacaoEnum tipo;
+	@NotNull
 	private String descricao;
+	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
+	@NotNull
 	private IdentityDTO categoria;
+	@NotNull
 	private IdentityDTO conta;
 
 	public BigDecimal getValor() {

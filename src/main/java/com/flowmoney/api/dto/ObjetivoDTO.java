@@ -2,15 +2,21 @@ package com.flowmoney.api.dto;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flowmoney.api.model.Objetivo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ObjetivoDTO {
 
+	@NotNull
 	private String nome;
+	@NotNull
 	private BigDecimal valor;
+	@NotNull
 	private BigDecimal valorInicial;
+	@NotNull
 	private BigDecimal valorRestante;
 
 	public String getNome() {
