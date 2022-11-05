@@ -19,7 +19,7 @@ public class Objetivo extends AbstractEntity<Long> {
 	private BigDecimal valor;
 
 	@NotNull
-	private BigDecimal valorInicial;
+	private BigDecimal valorObtido;
 
 	@NotNull
 	private BigDecimal valorRestante;
@@ -28,18 +28,18 @@ public class Objetivo extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
-	public Objetivo(String nome, BigDecimal valor, BigDecimal valorInicial, BigDecimal valorRestante) {
+	public Objetivo(String nome, BigDecimal valor, BigDecimal valorObtido, BigDecimal valorRestante) {
 		this.nome = nome;
 		this.valor = valor;
-		this.valorInicial = valorInicial;
+		this.valorObtido = valorObtido;
 		this.valorRestante = valorRestante;
 	}
 
-	public Objetivo(Long id, String nome, BigDecimal valor, BigDecimal valorInicial, BigDecimal valorRestante) {
+	public Objetivo(Long id, String nome, BigDecimal valor, BigDecimal valorObtido, BigDecimal valorRestante) {
 		this.id = id;
 		this.nome = nome;
 		this.valor = valor;
-		this.valorInicial = valorInicial;
+		this.valorObtido = valorObtido;
 		this.valorRestante = valorRestante;
 	}
 
@@ -63,12 +63,12 @@ public class Objetivo extends AbstractEntity<Long> {
 		this.valor = valor;
 	}
 
-	public BigDecimal getValorInicial() {
-		return valorInicial;
+	public BigDecimal getValorObtido() {
+		return valorObtido;
 	}
 
-	public void setValorInicial(BigDecimal valorInicial) {
-		this.valorInicial = valorInicial;
+	public void setValorObtido(BigDecimal valorObtido) {
+		this.valorObtido = valorObtido;
 	}
 
 	public BigDecimal getValorRestante() {

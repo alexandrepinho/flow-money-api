@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`objetivo` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(45) NOT NULL,
   `valor` DECIMAL(10,2) NOT NULL,
-  `valor_inicial` DECIMAL(10,2) NOT NULL,
+  `valor_obtido` DECIMAL(10,2) NOT NULL,
   `valor_restante` DECIMAL(10,2) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),

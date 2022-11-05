@@ -15,7 +15,7 @@ public class ObjetivoDTO {
 	@NotNull
 	private BigDecimal valor;
 	@NotNull
-	private BigDecimal valorInicial;
+	private BigDecimal valorObtido;
 	@NotNull
 	private BigDecimal valorRestante;
 
@@ -35,12 +35,12 @@ public class ObjetivoDTO {
 		this.valor = valor;
 	}
 
-	public BigDecimal getValorInicial() {
-		return valorInicial;
+	public BigDecimal getValorObtido() {
+		return valorObtido;
 	}
 
-	public void setValorInicial(BigDecimal valorInicial) {
-		this.valorInicial = valorInicial;
+	public void setValorObtido(BigDecimal valorObtido) {
+		this.valorObtido = valorObtido;
 	}
 
 	public BigDecimal getValorRestante() {
@@ -52,7 +52,7 @@ public class ObjetivoDTO {
 	}
 
 	public Objetivo transformarParaEntidade() {
-		return new Objetivo(nome, valor, valorInicial, valorRestante);
+		return new Objetivo(nome, valor, valorObtido, valorRestante);
 	}
 
 }

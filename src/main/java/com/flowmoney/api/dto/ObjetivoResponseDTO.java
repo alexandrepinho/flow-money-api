@@ -9,7 +9,7 @@ public class ObjetivoResponseDTO {
 	private Long id;
 	private String nome;
 	private BigDecimal valor;
-	private BigDecimal valorInicial;
+	private BigDecimal valorObtido;
 	private BigDecimal valorRestante;
 
 	public Long getId() {
@@ -36,12 +36,12 @@ public class ObjetivoResponseDTO {
 		this.valor = valor;
 	}
 
-	public BigDecimal getValorInicial() {
-		return valorInicial;
+	public BigDecimal getValorObtido() {
+		return valorObtido;
 	}
 
-	public void setValorInicial(BigDecimal valorInicial) {
-		this.valorInicial = valorInicial;
+	public void setValorObtido(BigDecimal valorObtido) {
+		this.valorObtido = valorObtido;
 	}
 
 	public BigDecimal getValorRestante() {
@@ -53,7 +53,7 @@ public class ObjetivoResponseDTO {
 	}
 
 	public Objetivo transformarParaEntidade() {
-		return new Objetivo(id, nome, valor, valorInicial, valorRestante);
+		return new Objetivo(id, nome, valor, valorObtido, valorRestante);
 	}
 
 }
