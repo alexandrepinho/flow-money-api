@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flowmoney.api.model.converter.TipoCategoriaConverter;
 import com.flowmoney.api.model.enumeration.TipoCategoriaEnum;
 
@@ -34,6 +35,7 @@ public class Categoria extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 	@OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<Transacao> transacoes = new ArrayList<>();
 	@OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<LancamentoFatura> lancamentos = new ArrayList<>();
