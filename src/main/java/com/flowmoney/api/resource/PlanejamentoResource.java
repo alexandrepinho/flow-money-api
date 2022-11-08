@@ -30,7 +30,6 @@ import com.flowmoney.api.dto.PlanejamentoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.exceptionhandler.exception.PlanejamentoInexistenteException;
 import com.flowmoney.api.model.Planejamento;
-import com.flowmoney.api.model.PlanejamentoCategoria;
 import com.flowmoney.api.model.Usuario;
 import com.flowmoney.api.repository.PlanejamentoRepository;
 import com.flowmoney.api.repository.TransacaoRepository;
@@ -64,9 +63,9 @@ public class PlanejamentoResource {
 	public ResponseEntity<PlanejamentoDTO> criar(@Valid @RequestBody PlanejamentoDTO planejamentoDTO,
 			HttpServletResponse response, Authentication authentication) {
 		Planejamento planejamento = planejamentoDTO.transformarParaEntidade();
-		for (PlanejamentoCategoria planCategoria : planejamento.getPlanejamentosCategorias()) {
-			planCategoria.setPlanejamento(planejamento);
-		}
+//		for (PlanejamentoCategoria planCategoria : planejamento.getPlanejamentosCategorias()) {
+//			planCategoria.setPlanejamento(planejamento);
+//		}
 		atribuirUsuario(planejamento, authentication);
 		
 		Planejamento planejamentoSalvo = planejamentoRepository.save(planejamento);
@@ -85,7 +84,8 @@ public class PlanejamentoResource {
 		for (PlanejamentoResponseDTO planResp : planejamentosResponseDTO) {
 			planResp.setValorGasto(transacaoRepository.totalSaidaByPeriodoCategorias(planResp.getDataInicial(),
 					planResp.getDataFinal(),
-					planResp.getPlanejamentosCategorias().stream().map((pc) -> pc.getCategoria().getId()).collect(Collectors.toList()), getUserName(authentication)));
+					planResp.getCategorias().stream().map((c) -> c.getId()).collect(Collectors.toList()),
+					getUserName(authentication)));
 
 		}
 		return planejamentosResponseDTO;
@@ -93,21 +93,24 @@ public class PlanejamentoResource {
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public ResponseEntity<PlanejamentoDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<PlanejamentoResponseDTO> buscarPeloId(@PathVariable Long id, Authentication authentication) {
 		Planejamento planejamento = planejamentoRepository.findByIdAndUsuarioEmail(id, getUserName(authentication))
 				.orElse(null);
-		return planejamento != null ? ResponseEntity.ok(modelMapper.map(planejamento, PlanejamentoDTO.class))
+		return planejamento != null ? ResponseEntity.ok(modelMapper.map(planejamento, PlanejamentoResponseDTO.class))
 				: ResponseEntity.notFound().build();
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public ResponseEntity<PlanejamentoDTO> editar(@PathVariable Long id,
-			@Valid @RequestBody PlanejamentoDTO planejamentoDTO, Authentication authentication) {
-		Planejamento planejamento = planejamentoDTO.transformarParaEntidade();
+	public ResponseEntity<PlanejamentoResponseDTO> editar(@PathVariable Long id,
+			@Valid @RequestBody PlanejamentoResponseDTO planejamentoResponseDTO, Authentication authentication) {
+		Planejamento planejamento = planejamentoResponseDTO.transformarParaEntidade();
+//		for (PlanejamentoCategoria planCategoria : planejamento.getPlanejamentosCategorias()) {
+//			planCategoria.setPlanejamento(planejamento);
+//		}
 		atribuirUsuario(planejamento, authentication);
 		Planejamento planejamentoSalvo = planejamentoService.atualizar(id, planejamento);
-		return ResponseEntity.ok(modelMapper.map(planejamentoSalvo, PlanejamentoDTO.class));
+		return ResponseEntity.ok(modelMapper.map(planejamentoSalvo, PlanejamentoResponseDTO.class));
 	}
 
 	@DeleteMapping("/{id}")

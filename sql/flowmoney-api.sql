@@ -281,7 +281,6 @@ DROP TABLE IF EXISTS `flowmoney-api`.`planejamento_categoria` ;
 
 CREATE TABLE IF NOT EXISTS `flowmoney-api`.`planejamento_categoria` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `valor` DECIMAL(10,2) NOT NULL,
   `categoria` BIGINT(20) NOT NULL,
   `planejamento` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),

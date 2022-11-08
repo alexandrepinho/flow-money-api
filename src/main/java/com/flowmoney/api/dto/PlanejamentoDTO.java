@@ -5,12 +5,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Planejamento;
-import com.flowmoney.api.model.PlanejamentoCategoria;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlanejamentoDTO {
@@ -21,9 +20,11 @@ public class PlanejamentoDTO {
 	private LocalDate dataInicial;
 	@NotNull
 	private LocalDate dataFinal;
+//
+//	@NotEmpty
+//	private List<PlanejamentoCategoria> planejamentosCategorias = new ArrayList<>();
 
-	@NotEmpty
-	private List<PlanejamentoCategoria> planejamentosCategorias = new ArrayList<>();
+	private List<Categoria> categorias = new ArrayList<>();
 
 	public BigDecimal getValorTotal() {
 		return valorTotal;
@@ -49,16 +50,28 @@ public class PlanejamentoDTO {
 		this.dataFinal = dataFinal;
 	}
 
-	public List<PlanejamentoCategoria> getPlanejamentosCategorias() {
-		return planejamentosCategorias;
-	}
+//	public List<PlanejamentoCategoria> getPlanejamentosCategorias() {
+//		return planejamentosCategorias;
+//	}
+//
+//	public void setPlanejamentosCategorias(List<PlanejamentoCategoria> planejamentosCategorias) {
+//		this.planejamentosCategorias = planejamentosCategorias;
+//	}
 
-	public void setPlanejamentosCategorias(List<PlanejamentoCategoria> planejamentosCategorias) {
-		this.planejamentosCategorias = planejamentosCategorias;
-	}
-
+//	public Planejamento transformarParaEntidade() {
+//		return new Planejamento(valorTotal, dataInicial, dataFinal, planejamentosCategorias);
+//	}
+	
 	public Planejamento transformarParaEntidade() {
-		return new Planejamento(valorTotal, dataInicial, dataFinal, planejamentosCategorias);
+		return new Planejamento(valorTotal, dataInicial, dataFinal, categorias);
+	}
+
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
 	}
 
 }
