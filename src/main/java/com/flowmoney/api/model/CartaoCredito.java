@@ -1,7 +1,6 @@
 package com.flowmoney.api.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +22,30 @@ public class CartaoCredito extends AbstractEntity<Long> {
 	@NotNull
 	private String descricao;
 	@NotNull
-	private LocalDate dataFechamento;
+	private Short diaFechamento;
 	@NotNull
-	private LocalDate dataVencimento;
+	private Short diaVencimento;
 	@ManyToOne
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 	@OneToMany(mappedBy = "cartaoCredito", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<LancamentoFatura> lancamentos = new ArrayList<>();
+
+	public CartaoCredito(String descricao, Short diaFechamento, Short diaVencimento, BigDecimal limite) {
+		this.descricao = descricao;
+		this.diaFechamento = diaFechamento;
+		this.diaVencimento = diaVencimento;
+		this.limite = limite;
+	}
+
+	public CartaoCredito(Long id, String descricao, Short diaFechamento, Short diaVencimento, BigDecimal limite) {
+		this(descricao, diaFechamento, diaVencimento, limite);
+		this.id = id;
+	}
+
+	public CartaoCredito() {
+
+	}
 
 	public BigDecimal getLimite() {
 		return limite;
@@ -48,20 +63,20 @@ public class CartaoCredito extends AbstractEntity<Long> {
 		this.descricao = descricao;
 	}
 
-	public LocalDate getDataFechamento() {
-		return dataFechamento;
+	public Short getDiaFechamento() {
+		return diaFechamento;
 	}
 
-	public void setDataFechamento(LocalDate dataFechamento) {
-		this.dataFechamento = dataFechamento;
+	public void setDiaFechamento(Short diaFechamento) {
+		this.diaFechamento = diaFechamento;
 	}
 
-	public LocalDate getDataVencimento() {
-		return dataVencimento;
+	public Short getDiaVencimento() {
+		return diaVencimento;
 	}
 
-	public void setDataVencimento(LocalDate dataVencimento) {
-		this.dataVencimento = dataVencimento;
+	public void setDiaVencimento(Short diaVencimento) {
+		this.diaVencimento = diaVencimento;
 	}
 
 	public Usuario getUsuario() {
