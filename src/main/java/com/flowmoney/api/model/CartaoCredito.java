@@ -47,6 +47,10 @@ public class CartaoCredito extends AbstractEntity<Long> {
 
 	}
 
+	public CartaoCredito(Long id) {
+		this.id = id;
+	}
+
 	public BigDecimal getLimite() {
 		return limite;
 	}

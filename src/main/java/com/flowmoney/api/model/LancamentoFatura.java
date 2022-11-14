@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.flowmoney.api.dto.IdentityDTO;
+
 @Entity
 @Table(name = "lancamento_fatura")
 public class LancamentoFatura extends AbstractEntity<Long> {
@@ -42,6 +44,28 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 	@ManyToOne
 	@JoinColumn(name = "categoria")
 	private Categoria categoria;
+
+	public LancamentoFatura(LocalDate data, String descricao, boolean parcelado, Integer qtdParcelas,
+			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria) {
+		this.data = data;
+		this.descricao = descricao;
+		this.parcelado = parcelado;
+		this.qtdParcelas = qtdParcelas;
+		this.fatura = new Fatura(fatura.getId());
+		this.cartaoCredito = new CartaoCredito(cartaoCredito.getId());
+		this.categoria = new Categoria(categoria.getId());
+
+	}
+
+	public LancamentoFatura() {
+
+	}
+
+	public LancamentoFatura(Long id, LocalDate data, String descricao, boolean parcelado, Integer qtdParcelas,
+			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria) {
+		this(data, descricao, parcelado, qtdParcelas, fatura, cartaoCredito, categoria);
+		this.id = id;
+	}
 
 	public LocalDate getData() {
 		return data;

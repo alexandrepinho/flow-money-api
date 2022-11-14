@@ -176,12 +176,28 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
   `valor_total` DECIMAL(10,2) NOT NULL,
   `pago` TINYINT(1) NOT NULL DEFAULT 0,
   `data_pagamento` DATE NULL,
+  `mes` SMALLINT NOT NULL,
+  `ano` SMALLINT NOT NULL,
   `conta` BIGINT(20) NOT NULL,
+  `usuario` BIGINT(20) NOT NULL,
+  `cartao_credito` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_fatura_conta1_idx` (`conta` ASC) VISIBLE,
+  INDEX `fk_fatura_usuario1_idx` (`usuario` ASC) VISIBLE,
+  INDEX `fk_fatura_cartao_credito1_idx` (`cartao_credito` ASC) VISIBLE,
   CONSTRAINT `fk_fatura_conta1`
     FOREIGN KEY (`conta`)
     REFERENCES `flowmoney-api`.`conta` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fatura_usuario1`
+    FOREIGN KEY (`usuario`)
+    REFERENCES `flowmoney-api`.`usuario` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fatura_cartao_credito1`
+    FOREIGN KEY (`cartao_credito`)
+    REFERENCES `flowmoney-api`.`cartao_credito` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -194,7 +210,7 @@ COMMENT = '	';
 DROP TABLE IF EXISTS `flowmoney-api`.`lancamento_fatura` ;
 
 CREATE TABLE IF NOT EXISTS `flowmoney-api`.`lancamento_fatura` (
-  `id` BIGINT(20) NOT NULL,
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `data` DATE NOT NULL,
   `descricao` VARCHAR(45) NOT NULL,
   `parcelado` TINYINT(1) ZEROFILL NOT NULL,
