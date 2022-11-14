@@ -22,10 +22,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.ContaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
+import com.flowmoney.api.exceptionhandler.exception.ObjetivoInexistenteException;
 
 @ControllerAdvice
 public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
@@ -74,7 +77,8 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ CategoriaInexistenteException.class, ContaInexistenteException.class,
 			CategoriaAssociadaTransacaoException.class, ContaAssociadaTransacaoException.class,
-			CategoriaAssociadaTransacaoException.class })
+			ObjetivoInexistenteException.class, CartaoCreditoInexistenteException.class,
+			FaturaExistenteNoPeriodoException.class })
 	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
 
 		String message = "";
@@ -93,6 +97,18 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
 		if (ex instanceof ContaInexistenteException) {
 			message = "conta.inexistente";
+		}
+
+		if (ex instanceof ObjetivoInexistenteException) {
+			message = "objetivo.inexistente";
+		}
+
+		if (ex instanceof CartaoCreditoInexistenteException) {
+			message = "cartao.inexistente";
+		}
+
+		if (ex instanceof FaturaExistenteNoPeriodoException) {
+			message = "fatura.existente-no-periodo";
 		}
 
 		String mensagemUsuario = messageSource.getMessage(message, null, LocaleContextHolder.getLocale());

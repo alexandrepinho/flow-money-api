@@ -17,9 +17,8 @@ public class FaturaResponseDTO {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataPagamento;
 	@NotNull
-	private Short mes;
-	@NotNull
-	private Short ano;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dataVencimento;
 	@NotNull
 	private IdentityDTO conta;
 	@NotNull
@@ -73,26 +72,18 @@ public class FaturaResponseDTO {
 		this.cartaoCredito = cartaoCredito;
 	}
 
-	public Short getMes() {
-		return mes;
+	public LocalDate getDataVencimento() {
+		return dataVencimento;
 	}
 
-	public void setMes(Short mes) {
-		this.mes = mes;
-	}
-
-	public Short getAno() {
-		return ano;
-	}
-
-	public void setAno(Short ano) {
-		this.ano = ano;
+	public void setDataVencimento(LocalDate dataVencimento) {
+		this.dataVencimento = dataVencimento;
 	}
 
 	public Fatura transformarParaEntidade() {
 
 		return new Fatura(this.id, this.conta, this.dataPagamento, this.pago, this.valorTotal, this.cartaoCredito,
-				this.mes, this.ano);
+				this.dataVencimento);
 	}
 
 }

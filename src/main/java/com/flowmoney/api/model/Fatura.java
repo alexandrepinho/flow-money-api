@@ -27,9 +27,8 @@ public class Fatura extends AbstractEntity<Long> {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataPagamento;
 	@NotNull
-	private Short mes;
-	@NotNull
-	private Short ano;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dataVencimento;
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "conta")
@@ -49,14 +48,13 @@ public class Fatura extends AbstractEntity<Long> {
 	}
 
 	public Fatura(IdentityDTO conta, boolean pago, BigDecimal valorTotal, IdentityDTO cartaoCredito,
-			LocalDate dataPagamento, Short mes, Short ano) {
+			LocalDate dataPagamento, LocalDate dataVencimento) {
 		this.conta = new Conta(conta.getId());
 		this.pago = pago;
 		this.valorTotal = valorTotal;
 		this.cartaoCredito = new CartaoCredito(cartaoCredito.getId());
 		this.dataPagamento = dataPagamento;
-		this.mes = mes;
-		this.ano = ano;
+		this.dataVencimento = dataVencimento;
 	}
 
 	public Fatura() {
@@ -64,8 +62,8 @@ public class Fatura extends AbstractEntity<Long> {
 	}
 
 	public Fatura(Long id, IdentityDTO conta, LocalDate dataPagamento, boolean pago, BigDecimal valorTotal,
-			IdentityDTO cartaoCredito, Short mes, Short ano) {
-		this(conta, pago, valorTotal, cartaoCredito, dataPagamento, mes, ano);
+			IdentityDTO cartaoCredito, LocalDate dataVencimento) {
+		this(conta, pago, valorTotal, cartaoCredito, dataPagamento, dataVencimento);
 		this.id = id;
 	}
 
@@ -121,20 +119,12 @@ public class Fatura extends AbstractEntity<Long> {
 		this.cartaoCredito = cartaoCredito;
 	}
 
-	public Short getMes() {
-		return mes;
+	public LocalDate getDataVencimento() {
+		return dataVencimento;
 	}
 
-	public void setMes(Short mes) {
-		this.mes = mes;
-	}
-
-	public Short getAno() {
-		return ano;
-	}
-
-	public void setAno(Short ano) {
-		this.ano = ano;
+	public void setDataVencimento(LocalDate dataVencimento) {
+		this.dataVencimento = dataVencimento;
 	}
 
 }
