@@ -1,5 +1,6 @@
 package com.flowmoney.api.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,9 @@ public class LancamentoFaturaResponseDTO {
 
 	@NotNull
 	private boolean parcelado;
+
+	@NotNull
+	private BigDecimal valor;
 
 	@NotNull
 	private Integer qtdParcelas;
@@ -96,9 +100,17 @@ public class LancamentoFaturaResponseDTO {
 		this.categoria = categoria;
 	}
 
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
+	}
+
 	public LancamentoFatura transformarParaEntidade() {
 		return new LancamentoFatura(this.id, this.data, this.descricao, this.parcelado, this.qtdParcelas, this.fatura,
-				this.cartaoCredito, this.categoria);
+				this.cartaoCredito, this.categoria, this.valor);
 	}
 
 }

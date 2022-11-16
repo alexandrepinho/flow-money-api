@@ -214,6 +214,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`lancamento_fatura` (
   `descricao` VARCHAR(45) NOT NULL,
   `parcelado` TINYINT(1) ZEROFILL NOT NULL,
   `qtd_parcelas` INT ZEROFILL NOT NULL,
+  `valor` DECIMAL(10,2) NOT NULL,
   `fatura` BIGINT(20) NOT NULL,
   `cartao_credito` BIGINT(20) NOT NULL,
   `usuario` BIGINT(20) NOT NULL,

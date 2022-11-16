@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,16 +72,16 @@ public class LancamentoFaturaResource {
 				.body(modelMapper.map(lancamentoFaturaSalvo, LancamentoFaturaDTO.class));
 	}
 
-	@GetMapping("/cartaoCredito/{idCartao}/mes/{mes}")
+	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public List<LancamentoFaturaResponseDTO> listarPorMesCartao(@PathVariable Long idCartao, @PathVariable Integer mes,
-			Authentication authentication) {
+	public List<LancamentoFaturaResponseDTO> listarPorMesAnoCartao(@RequestParam("cartaoCredito") Long idCartao,
+			@RequestParam("mes") Integer mes, @RequestParam("ano") Integer ano, Authentication authentication) {
 
 		CartaoCredito cartaoCredito = cartaoCreditoRepository.findById(idCartao).orElse(null);
 
 		Short diaFechamento = cartaoCredito.getDiaFechamento();
 
-		LocalDate dataFinalFatura = LocalDate.of(LocalDate.now().getYear(), mes, diaFechamento);
+		LocalDate dataFinalFatura = LocalDate.of(ano, mes, diaFechamento);
 		LocalDate dataInicialFatura = dataFinalFatura.minusMonths(1);
 
 		return lancamentoFaturaRepository

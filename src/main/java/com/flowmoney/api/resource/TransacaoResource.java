@@ -116,12 +116,12 @@ public class TransacaoResource {
 		transacaoRepository.deleteById(id);
 	}
 
-	@GetMapping("/totalCategoriaMes")
+	@GetMapping("/totalCategoriaMesAno")
 	public List<TotalCategoriaMesDTO> retornarTotalPorCategoriaMes(@RequestParam("mes") Integer mes,
-			Authentication authentication) {
+			@RequestParam("ano") Integer ano, Authentication authentication) {
 		String userName = getUserName(authentication);
 		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
-		return transacaoRepository.findTotalPorMesTipoTransacao(mes, usuario.getId());
+		return transacaoRepository.findTotalPorMesAnoTipoTransacao(mes, ano, usuario.getId());
 	}
 
 	private void atribuirUsuario(Transacao transacao, Authentication authentication) {

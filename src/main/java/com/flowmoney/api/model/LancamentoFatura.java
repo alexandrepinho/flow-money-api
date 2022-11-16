@@ -1,5 +1,6 @@
 package com.flowmoney.api.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -26,6 +27,9 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 	private Integer qtdParcelas;
 
 	@NotNull
+	private BigDecimal valor;
+
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "fatura")
 	private Fatura fatura;
@@ -46,7 +50,7 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 	private Categoria categoria;
 
 	public LancamentoFatura(LocalDate data, String descricao, boolean parcelado, Integer qtdParcelas,
-			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria) {
+			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria, BigDecimal valor) {
 		this.data = data;
 		this.descricao = descricao;
 		this.parcelado = parcelado;
@@ -54,6 +58,7 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 		this.fatura = new Fatura(fatura.getId());
 		this.cartaoCredito = new CartaoCredito(cartaoCredito.getId());
 		this.categoria = new Categoria(categoria.getId());
+		this.valor = valor;
 
 	}
 
@@ -62,8 +67,8 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 	}
 
 	public LancamentoFatura(Long id, LocalDate data, String descricao, boolean parcelado, Integer qtdParcelas,
-			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria) {
-		this(data, descricao, parcelado, qtdParcelas, fatura, cartaoCredito, categoria);
+			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria, BigDecimal valor) {
+		this(data, descricao, parcelado, qtdParcelas, fatura, cartaoCredito, categoria, valor);
 		this.id = id;
 	}
 
@@ -129,6 +134,14 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 }

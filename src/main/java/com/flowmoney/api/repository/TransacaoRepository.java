@@ -28,11 +28,13 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long>, Tra
 	@Query(value = "SELECT SUM(t.valor) FROM Transacao t JOIN t.categoria "
 			+ "WHERE t.data BETWEEN :dataInicial AND :dataFinal "
 			+ "AND t.categoria.id IN :categorias AND t.tipo=1 AND t.usuario.email=:emailUsuario")
-	public BigDecimal totalSaidaByPeriodoCategorias(@Param("dataInicial") LocalDate dataInicial, @Param("dataFinal") LocalDate dataFinal,
-			@Param("categorias") List<Long> categorias, @Param("emailUsuario") String emailUsuario);
+	public BigDecimal totalSaidaByPeriodoCategorias(@Param("dataInicial") LocalDate dataInicial,
+			@Param("dataFinal") LocalDate dataFinal, @Param("categorias") List<Long> categorias,
+			@Param("emailUsuario") String emailUsuario);
 
-	@Query(value = "SELECT new com.flowmoney.api.dto.TotalCategoriaMesDTO(SUM(t.valor),t.categoria.nome, t.tipo,MONTH(t.data)) FROM Transacao t where MONTH(t.data)=:mes and t.usuario.id=:usuario GROUP BY t.categoria.id")
-	public List<TotalCategoriaMesDTO> findTotalPorMesTipoTransacao(@Param("mes") Integer mes,
+	@Query(value = "SELECT new com.flowmoney.api.dto.TotalCategoriaMesDTO(SUM(t.valor),t.categoria.nome, t.tipo,MONTH(t.data)) FROM Transacao t "
+			+ "where MONTH(t.data)=:mes and YEAR(t.data)=:ano and t.usuario.id=:usuario GROUP BY t.categoria.id")
+	public List<TotalCategoriaMesDTO> findTotalPorMesAnoTipoTransacao(@Param("mes") Integer mes, @Param("ano") Integer ano,
 			@Param("usuario") Long usuario);
 
 }
