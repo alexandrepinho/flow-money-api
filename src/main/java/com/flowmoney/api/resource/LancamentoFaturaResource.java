@@ -2,7 +2,7 @@ package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,17 +23,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.dto.LancamentoFaturaDTO;
 import com.flowmoney.api.dto.LancamentoFaturaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
-import com.flowmoney.api.model.CartaoCredito;
+import com.flowmoney.api.exceptionhandler.exception.FaturaNaoEncontradaException;
+import com.flowmoney.api.exceptionhandler.exception.ValorLimiteCreditoExcedidoException;
+import com.flowmoney.api.model.Fatura;
 import com.flowmoney.api.model.LancamentoFatura;
 import com.flowmoney.api.model.Usuario;
-import com.flowmoney.api.repository.CartaoCreditoRepository;
+import com.flowmoney.api.repository.FaturaRepository;
 import com.flowmoney.api.repository.LancamentoFaturaRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.LancamentoFaturaService;
@@ -49,10 +50,10 @@ public class LancamentoFaturaResource {
 	private LancamentoFaturaRepository lancamentoFaturaRepository;
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private FaturaRepository faturaRepository;
 
 	@Autowired
-	private CartaoCreditoRepository cartaoCreditoRepository;
+	private UsuarioRepository usuarioRepository;
 
 	@Autowired
 	private LancamentoFaturaService lancamentoFaturaService;
@@ -65,6 +66,19 @@ public class LancamentoFaturaResource {
 	public ResponseEntity<LancamentoFaturaDTO> criar(@Valid @RequestBody LancamentoFaturaDTO lancamentoFaturaDTO,
 			HttpServletResponse response, Authentication authentication) {
 		LancamentoFatura lancamentoFatura = lancamentoFaturaDTO.transformarParaEntidade();
+		Fatura fatura = faturaRepository.findById(lancamentoFatura.getFatura().getId()).orElse(null);
+		if (fatura == null) {
+			throw new FaturaNaoEncontradaException();
+		}
+
+		fatura.setValorTotal(fatura.getValorTotal().add(lancamentoFatura.getValor()));
+		BigDecimal valorTotalUtilizadoBanco = faturaRepository.findByCartaoCreditoIdAndFaturaNaoPaga(fatura.getCartaoCredito().getId());
+		BigDecimal valorTotalComTotalFaturaAtualizado = valorTotalUtilizadoBanco.add(fatura.getValorTotal());
+
+		if (valorTotalComTotalFaturaAtualizado.compareTo(fatura.getCartaoCredito().getLimite()) == 1) {
+			throw new ValorLimiteCreditoExcedidoException();
+		}
+
 		atribuirUsuario(lancamentoFatura, authentication);
 		LancamentoFatura lancamentoFaturaSalvo = lancamentoFaturaRepository.save(lancamentoFatura);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoFaturaSalvo.getId()));
@@ -72,22 +86,13 @@ public class LancamentoFaturaResource {
 				.body(modelMapper.map(lancamentoFaturaSalvo, LancamentoFaturaDTO.class));
 	}
 
-	@GetMapping
+	@GetMapping("/fatura/{idFatura}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public List<LancamentoFaturaResponseDTO> listarPorMesAnoCartao(@RequestParam("cartaoCredito") Long idCartao,
-			@RequestParam("mes") Integer mes, @RequestParam("ano") Integer ano, Authentication authentication) {
+	public List<LancamentoFaturaResponseDTO> listarPorIdFatura(@PathVariable Long idFatura,
+			Authentication authentication) {
 
-		CartaoCredito cartaoCredito = cartaoCreditoRepository.findById(idCartao).orElse(null);
-
-		Short diaFechamento = cartaoCredito.getDiaFechamento();
-
-		LocalDate dataFinalFatura = LocalDate.of(ano, mes, diaFechamento);
-		LocalDate dataInicialFatura = dataFinalFatura.minusMonths(1);
-
-		return lancamentoFaturaRepository
-				.findByUsuarioEmailAndCartaoCreditoIdAndDataBetween(getUserName(authentication), idCartao,
-						dataInicialFatura, dataFinalFatura)
-				.stream().map(t -> {
+		return lancamentoFaturaRepository.findByUsuarioEmailAndFaturaId(getUserName(authentication), idFatura).stream()
+				.map(t -> {
 					return modelMapper.map(t, LancamentoFaturaResponseDTO.class);
 				}).collect(Collectors.toList());
 	}

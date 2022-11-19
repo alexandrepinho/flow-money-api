@@ -2,6 +2,7 @@ package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flowmoney.api.dto.CartaoCreditoDTO;
 import com.flowmoney.api.dto.CartaoCreditoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
+import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteException;
 import com.flowmoney.api.model.CartaoCredito;
 import com.flowmoney.api.model.Usuario;
 import com.flowmoney.api.repository.CartaoCreditoRepository;
+import com.flowmoney.api.repository.FaturaRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.CartaoCreditoService;
 
@@ -43,6 +46,9 @@ public class CartaoCreditoResource {
 
 	@Autowired
 	private CartaoCreditoRepository cartaoCreditoRepository;
+	
+	@Autowired
+	private FaturaRepository faturaRepository;
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -68,9 +74,15 @@ public class CartaoCreditoResource {
 	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<CartaoCreditoResponseDTO> listar(String tipo, Authentication authentication) {
-		return cartaoCreditoRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+		List<CartaoCreditoResponseDTO> cartoesResponseDTO = cartaoCreditoRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
 			return modelMapper.map(t, CartaoCreditoResponseDTO.class);
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()).stream().map(c -> {
+			BigDecimal valorTotalUtilizado = faturaRepository.findByCartaoCreditoIdAndFaturaNaoPaga(c.getId());
+			BigDecimal valorDisponivel = c.getLimite().subtract(valorTotalUtilizado);
+			c.setLimiteDisponivel(valorDisponivel);
+			return c;}).collect(Collectors.toList());
+		
+		return cartoesResponseDTO;
 	}
 
 	@GetMapping("/{id}")
@@ -80,6 +92,18 @@ public class CartaoCreditoResource {
 				.orElse(null);
 		return cartaoCredito != null ? ResponseEntity.ok(modelMapper.map(cartaoCredito, CartaoCreditoDTO.class))
 				: ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/valordisponivel/{idCartao}")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	public ResponseEntity<BigDecimal> retornarValorDisponivelCartao(@PathVariable Long idCartao) {
+		BigDecimal valorTotalUtilizado = faturaRepository.findByCartaoCreditoIdAndFaturaNaoPaga(idCartao);
+		CartaoCredito cartaoCredito = cartaoCreditoRepository.findById(idCartao).orElse(null);
+		if (cartaoCredito == null) {
+			throw new CartaoCreditoInexistenteException();
+		}
+		BigDecimal valorDisponivel = cartaoCredito.getLimite().subtract(valorTotalUtilizado);
+		return ResponseEntity.ok(valorDisponivel);
 	}
 
 	@PutMapping("/{id}")

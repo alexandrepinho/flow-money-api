@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flowmoney.api.dto.IdentityDTO;
 
 @Entity
@@ -16,6 +17,7 @@ import com.flowmoney.api.dto.IdentityDTO;
 public class LancamentoFatura extends AbstractEntity<Long> {
 
 	@NotNull
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
 
 	@NotNull

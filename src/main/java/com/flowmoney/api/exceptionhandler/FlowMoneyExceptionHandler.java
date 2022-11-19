@@ -28,7 +28,9 @@ import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteExceptio
 import com.flowmoney.api.exceptionhandler.exception.ContaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
+import com.flowmoney.api.exceptionhandler.exception.FaturaNaoEncontradaException;
 import com.flowmoney.api.exceptionhandler.exception.ObjetivoInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.ValorLimiteCreditoExcedidoException;
 
 @ControllerAdvice
 public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
@@ -78,7 +80,8 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ CategoriaInexistenteException.class, ContaInexistenteException.class,
 			CategoriaAssociadaTransacaoException.class, ContaAssociadaTransacaoException.class,
 			ObjetivoInexistenteException.class, CartaoCreditoInexistenteException.class,
-			FaturaExistenteNoPeriodoException.class })
+			FaturaExistenteNoPeriodoException.class, FaturaNaoEncontradaException.class,
+			ValorLimiteCreditoExcedidoException.class })
 	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
 
 		String message = "";
@@ -109,6 +112,14 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
 		if (ex instanceof FaturaExistenteNoPeriodoException) {
 			message = "fatura.existente-no-periodo";
+		}
+
+		if (ex instanceof FaturaNaoEncontradaException) {
+			message = "fatura.nao-encontrada";
+		}
+		
+		if (ex instanceof ValorLimiteCreditoExcedidoException) {
+			message = "cartao.valor-excedera-limite";
 		}
 
 		String mensagemUsuario = messageSource.getMessage(message, null, LocaleContextHolder.getLocale());

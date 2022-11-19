@@ -17,6 +17,7 @@ public class CartaoCreditoResponseDTO {
 	private Short diaFechamento;
 	@NotNull
 	private Short diaVencimento;
+	private BigDecimal limiteDisponivel;
 
 	public Long getId() {
 		return id;
@@ -56,6 +57,14 @@ public class CartaoCreditoResponseDTO {
 
 	public void setDiaVencimento(Short diaVencimento) {
 		this.diaVencimento = diaVencimento;
+	}
+
+	public BigDecimal getLimiteDisponivel() {
+		return limiteDisponivel;
+	}
+
+	public void setLimiteDisponivel(BigDecimal limiteDisponivel) {
+		this.limiteDisponivel = limiteDisponivel;
 	}
 
 	public CartaoCredito transformarParaEntidade() {

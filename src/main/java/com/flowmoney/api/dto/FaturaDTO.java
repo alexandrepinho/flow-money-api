@@ -18,10 +18,8 @@ public class FaturaDTO {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataPagamento;
 	@NotNull
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-M-dd")
 	private LocalDate dataVencimento;
-	@NotNull
-	private IdentityDTO conta;
 	@NotNull
 	private IdentityDTO cartaoCredito;
 
@@ -39,14 +37,6 @@ public class FaturaDTO {
 
 	public void setPago(boolean pago) {
 		this.pago = pago;
-	}
-
-	public IdentityDTO getConta() {
-		return conta;
-	}
-
-	public void setConta(IdentityDTO conta) {
-		this.conta = conta;
 	}
 
 	public LocalDate getDataPagamento() {
@@ -74,8 +64,7 @@ public class FaturaDTO {
 	}
 
 	public Fatura transformarParaEntidade() {
-		return new Fatura(this.conta, this.pago, this.valorTotal, this.cartaoCredito, this.dataPagamento,
-				this.dataVencimento);
+		return new Fatura(this.pago, this.valorTotal, this.cartaoCredito, this.dataPagamento, this.dataVencimento);
 	}
 
 }

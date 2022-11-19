@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
   `pago` TINYINT(1) NOT NULL DEFAULT 0,
   `data_pagamento` DATE NULL,
   `data_vencimento` DATE NOT NULL,
-  `conta` BIGINT(20) NOT NULL,
+  `conta` BIGINT(20) NULL,
   `usuario` BIGINT(20) NOT NULL,
   `cartao_credito` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),

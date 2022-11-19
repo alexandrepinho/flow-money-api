@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flowmoney.api.model.LancamentoFatura;
 
 public class LancamentoFaturaResponseDTO {
@@ -13,6 +14,7 @@ public class LancamentoFaturaResponseDTO {
 	private Long id;
 
 	@NotNull
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate data;
 
 	@NotNull

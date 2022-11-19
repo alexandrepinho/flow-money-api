@@ -82,8 +82,7 @@ public class FaturaResponseDTO {
 
 	public Fatura transformarParaEntidade() {
 
-		return new Fatura(this.id, this.conta, this.dataPagamento, this.pago, this.valorTotal, this.cartaoCredito,
-				this.dataVencimento);
+		return new Fatura(this.id, this.dataPagamento, this.pago, this.valorTotal, this.cartaoCredito, this.dataVencimento);
 	}
 
 }

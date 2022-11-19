@@ -1,5 +1,7 @@
 package com.flowmoney.api.repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,5 +25,11 @@ public interface FaturaRepository extends JpaRepository<Fatura, Long> {
 	public Optional<Fatura> findByIdAndUsuarioEmail(Long id, String email);
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
+
+	public Optional<Fatura> findByUsuarioEmailAndCartaoCreditoIdAndDataVencimento(String userName, Long idCartao,
+			LocalDate dataVencimento);
+	
+	@Query(value = "SELECT SUM(f.valorTotal) FROM Fatura f WHERE f.cartaoCredito.id =?1 AND f.pago=false")
+	public BigDecimal findByCartaoCreditoIdAndFaturaNaoPaga(Long idCartao);
 
 }
