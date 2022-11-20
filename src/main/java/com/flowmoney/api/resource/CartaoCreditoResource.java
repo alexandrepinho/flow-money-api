@@ -78,7 +78,7 @@ public class CartaoCreditoResource {
 			return modelMapper.map(t, CartaoCreditoResponseDTO.class);
 		}).collect(Collectors.toList()).stream().map(c -> {
 			BigDecimal valorTotalUtilizado = faturaRepository.findByCartaoCreditoIdAndFaturaNaoPaga(c.getId());
-			BigDecimal valorDisponivel = c.getLimite().subtract(valorTotalUtilizado);
+			BigDecimal valorDisponivel = c.getLimite().subtract(valorTotalUtilizado != null ? valorTotalUtilizado : new BigDecimal(0));
 			c.setLimiteDisponivel(valorDisponivel);
 			return c;}).collect(Collectors.toList());
 		

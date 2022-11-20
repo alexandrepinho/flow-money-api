@@ -2,7 +2,6 @@ package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.dto.LancamentoFaturaDTO;
 import com.flowmoney.api.dto.LancamentoFaturaResponseDTO;
-import com.flowmoney.api.event.RecursoCriadoEvent;
-import com.flowmoney.api.exceptionhandler.exception.FaturaNaoEncontradaException;
-import com.flowmoney.api.exceptionhandler.exception.ValorLimiteCreditoExcedidoException;
-import com.flowmoney.api.model.Fatura;
 import com.flowmoney.api.model.LancamentoFatura;
 import com.flowmoney.api.model.Usuario;
-import com.flowmoney.api.repository.FaturaRepository;
 import com.flowmoney.api.repository.LancamentoFaturaRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.LancamentoFaturaService;
@@ -50,9 +44,6 @@ public class LancamentoFaturaResource {
 	private LancamentoFaturaRepository lancamentoFaturaRepository;
 
 	@Autowired
-	private FaturaRepository faturaRepository;
-
-	@Autowired
 	private UsuarioRepository usuarioRepository;
 
 	@Autowired
@@ -63,27 +54,14 @@ public class LancamentoFaturaResource {
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public ResponseEntity<LancamentoFaturaDTO> criar(@Valid @RequestBody LancamentoFaturaDTO lancamentoFaturaDTO,
+	public ResponseEntity<List<LancamentoFaturaDTO>> criar(@Valid @RequestBody LancamentoFaturaDTO lancamentoFaturaDTO,
 			HttpServletResponse response, Authentication authentication) {
-		LancamentoFatura lancamentoFatura = lancamentoFaturaDTO.transformarParaEntidade();
-		Fatura fatura = faturaRepository.findById(lancamentoFatura.getFatura().getId()).orElse(null);
-		if (fatura == null) {
-			throw new FaturaNaoEncontradaException();
-		}
-
-		fatura.setValorTotal(fatura.getValorTotal().add(lancamentoFatura.getValor()));
-		BigDecimal valorTotalUtilizadoBanco = faturaRepository.findByCartaoCreditoIdAndFaturaNaoPaga(fatura.getCartaoCredito().getId());
-		BigDecimal valorTotalComTotalFaturaAtualizado = valorTotalUtilizadoBanco.add(fatura.getValorTotal());
-
-		if (valorTotalComTotalFaturaAtualizado.compareTo(fatura.getCartaoCredito().getLimite()) == 1) {
-			throw new ValorLimiteCreditoExcedidoException();
-		}
-
-		atribuirUsuario(lancamentoFatura, authentication);
-		LancamentoFatura lancamentoFaturaSalvo = lancamentoFaturaRepository.save(lancamentoFatura);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoFaturaSalvo.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(modelMapper.map(lancamentoFaturaSalvo, LancamentoFaturaDTO.class));
+		
+		List<LancamentoFatura> lancamentosFaturaSalvo = lancamentoFaturaService.novoLancamento(lancamentoFaturaDTO,
+				authentication);
+		return ResponseEntity.ok(lancamentosFaturaSalvo.stream().map(lf -> {
+			return modelMapper.map(lf, LancamentoFaturaDTO.class);
+		}).collect(Collectors.toList()));
 	}
 
 	@GetMapping("/fatura/{idFatura}")
@@ -128,6 +106,7 @@ public class LancamentoFaturaResource {
 		String userName = getUserName(authentication);
 		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
 		lancamentoFatura.setUsuario(usuario);
+		lancamentoFatura.getFatura().setUsuario(usuario);
 	}
 
 }

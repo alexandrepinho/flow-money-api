@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public abstract class AbstractService<T> {
 	
 	@Autowired
-	private JpaRepository<T, Long> repository;
+	protected JpaRepository<T, Long> repository;
 
 	public T atualizar(Long id, T abstractEntity) {
 

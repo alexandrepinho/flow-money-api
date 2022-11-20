@@ -30,6 +30,8 @@ public class CartaoCredito extends AbstractEntity<Long> {
 	private Usuario usuario;
 	@OneToMany(mappedBy = "cartaoCredito", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<LancamentoFatura> lancamentos = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cartaoCredito", cascade = CascadeType.REMOVE)
+	private List<Fatura> faturas = new ArrayList<>();
 
 	public CartaoCredito(String descricao, Short diaFechamento, Short diaVencimento, BigDecimal limite) {
 		this.descricao = descricao;
