@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flowmoney.api.dto.LancamentoFaturaDTO;
 import com.flowmoney.api.dto.LancamentoFaturaResponseDTO;
 import com.flowmoney.api.model.LancamentoFatura;
-import com.flowmoney.api.model.Usuario;
 import com.flowmoney.api.repository.LancamentoFaturaRepository;
-import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.LancamentoFaturaService;
 
 @RestController
@@ -42,9 +40,6 @@ public class LancamentoFaturaResource {
 
 	@Autowired
 	private LancamentoFaturaRepository lancamentoFaturaRepository;
-
-	@Autowired
-	private UsuarioRepository usuarioRepository;
 
 	@Autowired
 	private LancamentoFaturaService lancamentoFaturaService;
@@ -89,24 +84,15 @@ public class LancamentoFaturaResource {
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<LancamentoFaturaDTO> editar(@PathVariable Long id,
 			@Valid @RequestBody LancamentoFaturaDTO lancamentoFaturaDTO, Authentication authentication) {
-		LancamentoFatura lancamentoFatura = lancamentoFaturaDTO.transformarParaEntidade();
-		atribuirUsuario(lancamentoFatura, authentication);
-		LancamentoFatura lancamentoFaturaSalvo = lancamentoFaturaService.atualizar(id, lancamentoFatura);
-		return ResponseEntity.ok(modelMapper.map(lancamentoFaturaSalvo, LancamentoFaturaDTO.class));
+		return ResponseEntity
+				.ok(modelMapper.map(lancamentoFaturaService.editarLancamento(id, lancamentoFaturaDTO, authentication), LancamentoFaturaDTO.class));
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long id, Authentication authentication) {
-		lancamentoFaturaRepository.deleteById(id);
-	}
-
-	private void atribuirUsuario(LancamentoFatura lancamentoFatura, Authentication authentication) {
-		String userName = getUserName(authentication);
-		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
-		lancamentoFatura.setUsuario(usuario);
-		lancamentoFatura.getFatura().setUsuario(usuario);
+	public void remover(@PathVariable Long id) {
+		lancamentoFaturaService.removerLancamento(id);
 	}
 
 }
