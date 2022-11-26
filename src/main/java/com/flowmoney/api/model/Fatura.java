@@ -21,7 +21,7 @@ import com.flowmoney.api.dto.IdentityDTO;
 @Table(name = "fatura")
 public class Fatura extends AbstractEntity<Long> {
 
-	@NotNull
+	@NotNull(message = "Valor Total obrigatório")
 	private BigDecimal valorTotal;
 	private boolean pago;
 	@JsonFormat(pattern = "yyyy-MM-dd")
@@ -123,6 +123,14 @@ public class Fatura extends AbstractEntity<Long> {
 
 	public void setDataVencimento(LocalDate dataVencimento) {
 		this.dataVencimento = dataVencimento;
+	}
+
+	public List<LancamentoFatura> getLancamentos() {
+		return lancamentos;
+	}
+
+	public void setLancamentos(List<LancamentoFatura> lancamentos) {
+		this.lancamentos = lancamentos;
 	}
 
 }

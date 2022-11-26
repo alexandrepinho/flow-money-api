@@ -2,10 +2,7 @@ package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -29,15 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.flowmoney.api.dto.FaturaDTO;
 import com.flowmoney.api.dto.FaturaResponseDTO;
-import com.flowmoney.api.event.RecursoCriadoEvent;
-import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteException;
-import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
-import com.flowmoney.api.model.CartaoCredito;
 import com.flowmoney.api.model.Fatura;
-import com.flowmoney.api.model.Usuario;
-import com.flowmoney.api.repository.CartaoCreditoRepository;
 import com.flowmoney.api.repository.FaturaRepository;
-import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.service.FaturaService;
 
 @RestController
@@ -51,12 +41,6 @@ public class FaturaResource {
 	private FaturaRepository faturaRepository;
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
-
-	@Autowired
-	private CartaoCreditoRepository cartaoCreditoRepository;
-
-	@Autowired
 	private FaturaService faturaService;
 
 	@Autowired
@@ -64,35 +48,18 @@ public class FaturaResource {
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
-	public ResponseEntity<FaturaResponseDTO> criar(@Valid @RequestBody FaturaDTO faturaDTO, HttpServletResponse response,
-			Authentication authentication) {
+	public ResponseEntity<FaturaResponseDTO> criar(@Valid @RequestBody FaturaDTO faturaDTO,
+			HttpServletResponse response, Authentication authentication) {
 
-		CartaoCredito cartaoCredito = cartaoCreditoRepository.findById(faturaDTO.getCartaoCredito().getId())
-				.orElse(null);
-		if (cartaoCredito == null) {
-			throw new CartaoCreditoInexistenteException();
-		}
-
-		boolean faturaJaExiste = faturaRepository.retornarQuantidadePorUsuarioEmailAndMes(getUserName(authentication),
-				faturaDTO.getDataVencimento().getMonth().getValue()) != 0 ? true : false;
-
-		if (faturaJaExiste) {
-			throw new FaturaExistenteNoPeriodoException();
-		}
-
-		Fatura fatura = faturaDTO.transformarParaEntidade();
-		atribuirUsuario(fatura, authentication);
-		Fatura faturaSalva = faturaRepository.save(fatura);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, faturaSalva.getId()));
+		Fatura faturaSalva = faturaService.cadastrarFatura(faturaDTO, response, authentication);
 		return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(faturaSalva, FaturaResponseDTO.class));
 	}
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<FaturaResponseDTO> listar(String tipo, Authentication authentication) {
-		return faturaRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
-			return modelMapper.map(t, FaturaResponseDTO.class);
-		}).collect(Collectors.toList());
+		return faturaRepository.findByUsuarioEmail(getUserName(authentication)).stream()
+				.map(t -> modelMapper.map(t, FaturaResponseDTO.class)).toList();
 	}
 
 	@GetMapping("/cartao/{idCartao}/mes/{mes}/ano/{ano}")
@@ -100,14 +67,7 @@ public class FaturaResource {
 	public ResponseEntity<FaturaResponseDTO> buscarPorMesAnoCartao(@PathVariable Long idCartao,
 			@PathVariable Integer mes, @PathVariable Integer ano, Authentication authentication) {
 
-		CartaoCredito cartaoCredito = cartaoCreditoRepository.findById(idCartao).orElse(null);
-
-		Short diaVencimento = cartaoCredito.getDiaVencimento();
-
-		LocalDate dataVencimento = LocalDate.of(ano, Month.of(mes), diaVencimento);
-
-		Fatura fatura = faturaRepository.findByUsuarioEmailAndCartaoCreditoIdAndDataVencimento(
-				getUserName(authentication), idCartao, dataVencimento).orElse(null);
+		Fatura fatura = faturaService.buscarPorMesAnoCartao(idCartao, mes, ano, authentication);
 
 		return fatura != null ? ResponseEntity.ok(modelMapper.map(fatura, FaturaResponseDTO.class))
 				: ResponseEntity.notFound().build();
@@ -125,9 +85,17 @@ public class FaturaResource {
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public ResponseEntity<FaturaDTO> editar(@PathVariable Long id, @Valid @RequestBody FaturaDTO faturaDTO,
 			Authentication authentication) {
-		Fatura fatura = faturaDTO.transformarParaEntidade();
-		atribuirUsuario(fatura, authentication);
-		Fatura faturaSalva = faturaService.atualizar(id, fatura);
+		Fatura faturaSalva = faturaService.editarFatura(id, faturaDTO, authentication);
+		return ResponseEntity.ok(modelMapper.map(faturaSalva, FaturaDTO.class));
+	}
+
+	@PutMapping("/{id}/conta/{idConta}")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	public ResponseEntity<FaturaDTO> pagarFatura(@PathVariable Long id, @Valid @RequestBody FaturaDTO faturaDTO,
+			Authentication authentication, @PathVariable Long idConta) {
+
+		Fatura faturaSalva = faturaService.pagarFatura(id, faturaDTO, authentication, idConta);
+
 		return ResponseEntity.ok(modelMapper.map(faturaSalva, FaturaDTO.class));
 	}
 
@@ -136,12 +104,6 @@ public class FaturaResource {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
 		faturaRepository.deleteById(id);
-	}
-
-	private void atribuirUsuario(Fatura fatura, Authentication authentication) {
-		String userName = getUserName(authentication);
-		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
-		fatura.setUsuario(usuario);
 	}
 
 }

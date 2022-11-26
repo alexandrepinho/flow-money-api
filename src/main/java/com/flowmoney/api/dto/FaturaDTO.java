@@ -12,12 +12,12 @@ import com.flowmoney.api.model.Fatura;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FaturaDTO {
 
-	@NotNull
+	@NotNull(message =  "Valor Total obrigatório")
 	private BigDecimal valorTotal;
 	private boolean pago;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataPagamento;
-	@NotNull
+	@NotNull(message =  "Data de Vencimento obrigatória")
 	@JsonFormat(pattern = "yyyy-M-dd")
 	private LocalDate dataVencimento;
 	@NotNull

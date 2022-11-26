@@ -67,6 +67,11 @@ public class UsuarioResource {
 		reajusteSaida.setNome("Reajuste Saída");
 		reajusteSaida.setTipo(TipoCategoriaEnum.SAIDA);
 		reajusteSaida.setUsuario(usuarioSalvo);
+		
+		Categoria pagamentoParcialCartao = new Categoria();
+		pagamentoParcialCartao.setNome("Pagamento parcial de cartão");
+		pagamentoParcialCartao.setTipo(TipoCategoriaEnum.SAIDA);
+		pagamentoParcialCartao.setUsuario(usuarioSalvo);
 
 		categoriaRepository.save(reajusteEntrada);
 		categoriaRepository.save(reajusteSaida);

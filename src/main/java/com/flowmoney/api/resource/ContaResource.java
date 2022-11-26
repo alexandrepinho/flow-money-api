@@ -120,20 +120,10 @@ public class ContaResource {
 
 			if (contaSalva.getSaldo().compareTo(conta.getSaldo()) > 0) {
 				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(1)));
-				transacaoReajuste.setTipo(TipoTransacaoEnum.SAIDA);// TODO - TODA VEZ QUE CADASTRAR UM
-																	// USUÁRIO É FEITO UM PRIMEIRO INSERT
-																	// DESSE TIPO DE CATEGORIA PARA QUANDO
-																	// OCORRER AJUSTE DE VALOR EM CONTA SER
-																	// FEITA UMA TRANSAÇÃO COM ESSA
-																	// CATEGORIA
+				transacaoReajuste.setTipo(TipoTransacaoEnum.SAIDA);
 				transacaoReajuste.setValor(contaSalva.getSaldo().subtract(conta.getSaldo()));
 			} else if (contaSalva.getSaldo().compareTo(conta.getSaldo()) < 0) {
-				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(2)));// TODO - TODA VEZ QUE CADASTRAR UM
-																				// USUÁRIO É FEITO UM SEGUNDO INSERT
-																				// DESSE TIPO DE CATEGORIA PARA QUANDO
-																				// OCORRER AJUSTE DE VALOR EM CONTA
-																				// SERFEITA UMA TRANSAÇÃO COM ESSA
-																				// CATEGORIA
+				transacaoReajuste.setCategoria(new Categoria(Long.valueOf(2)));
 				transacaoReajuste.setTipo(TipoTransacaoEnum.ENTRADA);
 				transacaoReajuste.setValor(conta.getSaldo().subtract(contaSalva.getSaldo()));
 			}

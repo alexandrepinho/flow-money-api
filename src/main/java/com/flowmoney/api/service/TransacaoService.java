@@ -63,7 +63,7 @@ public class TransacaoService extends AbstractService<Transacao> {
 		}
 
 		transacaoSalva.getConta().retirarEfeitoValorTransacao(transacaoSalva);
-		if (transacao.getConta().getId() != transacaoSalva.getConta().getId()) {
+		if (!transacao.getConta().getId().equals(transacaoSalva.getConta().getId())) {
 			contaRepository.save(transacaoSalva.getConta());
 			transacao.setConta(contaRepository.findById(transacao.getConta().getId()).orElse(null));
 		} else {
