@@ -53,6 +53,10 @@ public class Transacao extends AbstractEntity<Long> {
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
+	@ManyToOne
+	@JoinColumn(name = "fatura")
+	private Fatura fatura;
+
 	public Transacao(BigDecimal valor, TipoTransacaoEnum tipo, String descricao, LocalDate data, IdentityDTO categoria,
 			IdentityDTO conta) {
 		this.valor = valor;
@@ -137,6 +141,14 @@ public class Transacao extends AbstractEntity<Long> {
 
 	public void setEfetuada(boolean efetuada) {
 		this.efetuada = efetuada;
+	}
+
+	public Fatura getFatura() {
+		return fatura;
+	}
+
+	public void setFatura(Fatura fatura) {
+		this.fatura = fatura;
 	}
 
 }

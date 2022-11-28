@@ -29,6 +29,8 @@ public class Fatura extends AbstractEntity<Long> {
 	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataVencimento;
+	private boolean pagamentoParcial;
+	private BigDecimal valorPago;
 	@ManyToOne
 	@JoinColumn(name = "conta")
 	private Conta conta;
@@ -42,12 +44,15 @@ public class Fatura extends AbstractEntity<Long> {
 	@OneToMany(mappedBy = "fatura", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<LancamentoFatura> lancamentos = new ArrayList<>();
 
+	@OneToMany(mappedBy = "fatura", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Transacao> transacoes = new ArrayList<>();
+
 	public Fatura(IdentityDTO fatura) {
 		this.id = fatura.getId();
 	}
 
-	public Fatura(boolean pago, BigDecimal valorTotal, IdentityDTO cartaoCredito,
-			LocalDate dataPagamento, LocalDate dataVencimento) {
+	public Fatura(boolean pago, BigDecimal valorTotal, IdentityDTO cartaoCredito, LocalDate dataPagamento,
+			LocalDate dataVencimento) {
 		this.pago = pago;
 		this.valorTotal = valorTotal;
 		this.cartaoCredito = new CartaoCredito(cartaoCredito.getId());
@@ -59,10 +64,17 @@ public class Fatura extends AbstractEntity<Long> {
 
 	}
 
-	public Fatura(Long id, LocalDate dataPagamento, boolean pago, BigDecimal valorTotal,
-			IdentityDTO cartaoCredito, LocalDate dataVencimento) {
+	public Fatura(Long id, LocalDate dataPagamento, boolean pago, BigDecimal valorTotal, IdentityDTO cartaoCredito,
+			LocalDate dataVencimento) {
 		this(pago, valorTotal, cartaoCredito, dataPagamento, dataVencimento);
 		this.id = id;
+	}
+
+	public Fatura(boolean pago, BigDecimal valorTotal, IdentityDTO cartaoCredito, LocalDate dataPagamento,
+			LocalDate dataVencimento, boolean pagamentoParcial, BigDecimal valorPago) {
+		this(pago, valorTotal, cartaoCredito, dataPagamento, dataVencimento);
+		this.pagamentoParcial = pagamentoParcial;
+		this.valorPago = valorPago;
 	}
 
 	public Fatura(Long id) {
@@ -131,6 +143,30 @@ public class Fatura extends AbstractEntity<Long> {
 
 	public void setLancamentos(List<LancamentoFatura> lancamentos) {
 		this.lancamentos = lancamentos;
+	}
+
+	public List<Transacao> getTransacoes() {
+		return transacoes;
+	}
+
+	public void setTransacoes(List<Transacao> transacoes) {
+		this.transacoes = transacoes;
+	}
+
+	public boolean isPagamentoParcial() {
+		return pagamentoParcial;
+	}
+
+	public void setPagamentoParcial(boolean pagamentoParcial) {
+		this.pagamentoParcial = pagamentoParcial;
+	}
+
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago;
 	}
 
 }

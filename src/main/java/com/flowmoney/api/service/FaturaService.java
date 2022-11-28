@@ -19,7 +19,9 @@ import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteExce
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaNaoEncontradaException;
+import com.flowmoney.api.exceptionhandler.exception.ValorPagoFaturaInvalidoException;
 import com.flowmoney.api.model.CartaoCredito;
+import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Fatura;
 import com.flowmoney.api.model.LancamentoFatura;
@@ -49,7 +51,7 @@ public class FaturaService extends AbstractService<Fatura> {
 
 	@Autowired
 	private FaturaRepository faturaRepository;
-	
+
 	@Autowired
 	private LancamentoFaturaRepository lancamentoFaturaRepository;
 
@@ -80,6 +82,14 @@ public class FaturaService extends AbstractService<Fatura> {
 	public Fatura pagarFatura(Long id, FaturaDTO faturaDTO, Authentication authentication, Long idConta) {
 		Fatura fatura = faturaDTO.transformarParaEntidade();
 		fatura.setPago(true);
+		fatura.setId(id);
+
+		if (faturaDTO.getValorPago().compareTo(fatura.getValorTotal()) > 0) {
+			throw new ValorPagoFaturaInvalidoException();
+		}
+		
+		fatura.setPagamentoParcial(
+				faturaDTO.getValorPago().compareTo(fatura.getValorTotal()) < 0 || faturaDTO.isPagamentoParcial());
 
 		Conta conta = contaRepository.findById(idConta).orElse(null);
 		if (conta == null) {
@@ -87,16 +97,41 @@ public class FaturaService extends AbstractService<Fatura> {
 		}
 		fatura.setConta(conta);
 
-		atribuirUsuario(fatura, authentication);
-		Fatura faturaSalva = atualizar(id, fatura);
+		String userName = getUserName(authentication);
+		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
 
-		List<LancamentoFatura> lancamentos = lancamentoFaturaRepository
-				.findByUsuarioEmailAndFaturaId(getUserName(authentication), id);
+		if (faturaDTO.isPagamentoParcial()) {
+			Transacao transacaoPagamentoParcial = gerarTransacaoPagamentoParcialFatura(faturaDTO, conta, usuario);
 
-		if (lancamentos == null) {
-			throw new FaturaNaoEncontradaException();
+			fatura.getTransacoes().add(transacaoPagamentoParcial);
+			transacaoPagamentoParcial.setFatura(fatura);
+			
+			LancamentoFatura lancamentoDiferencaPagamentoParcialFaturaFutura = montarLancamentoDiferencaPagamentoParcial(
+					fatura, usuario);
+
+			verificarMontarFaturaFuturaParcial(lancamentoDiferencaPagamentoParcialFaturaFutura, authentication, fatura.getDataVencimento());
+
+			lancamentoFaturaRepository.save(lancamentoDiferencaPagamentoParcialFaturaFutura);
+
+		} else {
+			List<LancamentoFatura> lancamentos = lancamentoFaturaRepository
+					.findByUsuarioEmailAndFaturaId(getUserName(authentication), id);
+
+			if (lancamentos == null) {
+				throw new FaturaNaoEncontradaException();
+			}
+
+			gerarTransacoesPagamentoTotal(fatura, conta, usuario, lancamentos);
+
+			fatura.setValorPago(fatura.getValorTotal());
 		}
 
+		atribuirUsuario(fatura, authentication);
+
+		return atualizar(id, fatura);
+	}
+
+	private void gerarTransacoesPagamentoTotal(Fatura fatura, Conta conta, Usuario usuario, List<LancamentoFatura> lancamentos) {
 		for (LancamentoFatura lancamento : lancamentos) {
 			Transacao transacao = new Transacao();
 			transacao.setCategoria(lancamento.getCategoria());
@@ -105,13 +140,40 @@ public class FaturaService extends AbstractService<Fatura> {
 			transacao.setDescricao(lancamento.getDescricao());
 			transacao.setEfetuada(true);
 			transacao.setTipo(TipoTransacaoEnum.SAIDA);
-			String userName = getUserName(authentication);
-			Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
 			transacao.setUsuario(usuario);
 			transacao.setValor(lancamento.getValor());
+			fatura.getTransacoes().add(transacao);
+			transacao.setFatura(fatura);
 			transacaoService.salvar(transacao);
 		}
-		return faturaSalva;
+	}
+
+	private LancamentoFatura montarLancamentoDiferencaPagamentoParcial(Fatura fatura, Usuario usuario) {
+		LancamentoFatura lancamentoDiferencaPagamentoParcialFaturaFutura = new LancamentoFatura();
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setCartaoCredito(fatura.getCartaoCredito());
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setCategoria(new Categoria(3l));
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setData(LocalDate.now());
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setDescricao("Fatura passada");
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setFatura(fatura);
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setParcelado(false);
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setQtdParcelas(1);
+		lancamentoDiferencaPagamentoParcialFaturaFutura.setUsuario(usuario);
+		lancamentoDiferencaPagamentoParcialFaturaFutura
+				.setValor(fatura.getValorTotal().subtract(fatura.getValorPago()));
+		return lancamentoDiferencaPagamentoParcialFaturaFutura;
+	}
+
+	private Transacao gerarTransacaoPagamentoParcialFatura(FaturaDTO faturaDTO, Conta conta, Usuario usuario) {
+		Transacao transacaoPagamentoParcial = new Transacao();
+		transacaoPagamentoParcial.setCategoria(new Categoria(3l));
+		transacaoPagamentoParcial.setConta(conta);
+		transacaoPagamentoParcial.setData(LocalDate.now());
+		transacaoPagamentoParcial.setDescricao("Pagamento parcial de cartão");
+		transacaoPagamentoParcial.setEfetuada(true);
+		transacaoPagamentoParcial.setTipo(TipoTransacaoEnum.SAIDA);
+		transacaoPagamentoParcial.setUsuario(usuario);
+		transacaoPagamentoParcial.setValor(faturaDTO.getValorPago());
+		return transacaoService.salvar(transacaoPagamentoParcial);
 	}
 
 	public Fatura editarFatura(Long id, FaturaDTO faturaDTO, Authentication authentication) {
@@ -139,5 +201,33 @@ public class FaturaService extends AbstractService<Fatura> {
 
 		return faturaRepository.findByUsuarioEmailAndCartaoCreditoIdAndDataVencimento(getUserName(authentication),
 				idCartao, dataVencimento).orElse(null);
+	}
+
+	private void verificarMontarFaturaFuturaParcial(LancamentoFatura lancamentoFatura, Authentication authentication, LocalDate dataVencimentoFaturaAtual) {
+		LocalDate dataVencimentoFatura = dataVencimentoFaturaAtual.plusMonths(1);
+		Fatura f = faturaRepository.findByUsuarioEmailAndCartaoCreditoIdAndDataVencimento(getUserName(authentication),
+				lancamentoFatura.getCartaoCredito().getId(), dataVencimentoFatura).orElse(null);
+		if (f == null) {
+			f = new Fatura();
+			f.setCartaoCredito(lancamentoFatura.getCartaoCredito());
+			f.setDataVencimento(dataVencimentoFatura);
+			f.setPago(false);
+			f.setValorTotal(lancamentoFatura.getValor());
+		} else {
+			f.setValorTotal(f.getValorTotal().add(lancamentoFatura.getValor()));
+		}
+
+		
+		lancamentoFatura.setFatura(f);
+		atribuirUsuario(lancamentoFatura, authentication);
+		faturaRepository.save(f);
+
+	}
+
+	private void atribuirUsuario(LancamentoFatura lancamentoFatura, Authentication authentication) {
+		String userName = getUserName(authentication);
+		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
+		lancamentoFatura.setUsuario(usuario);
+		lancamentoFatura.getFatura().setUsuario(usuario);
 	}
 }

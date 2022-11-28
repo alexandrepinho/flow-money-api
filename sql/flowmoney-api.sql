@@ -108,43 +108,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `flowmoney-api`.`transacao`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `flowmoney-api`.`transacao` ;
-
-CREATE TABLE IF NOT EXISTS `flowmoney-api`.`transacao` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `valor` DECIMAL(10,2) NOT NULL,
-  `tipo` SMALLINT(1) NOT NULL,
-  `descricao` VARCHAR(100) NOT NULL,
-  `data` DATE NOT NULL,
-  `categoria` BIGINT(20) NOT NULL,
-  `usuario` BIGINT(20) NOT NULL,
-  `conta` BIGINT(20) NOT NULL,
-  `efetuada` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  INDEX `fk_transacao_categoria1_idx` (`categoria` ASC) VISIBLE,
-  INDEX `fk_transacao_usuario1_idx` (`usuario` ASC) VISIBLE,
-  INDEX `fk_transacao_conta1_idx` (`conta` ASC) VISIBLE,
-  CONSTRAINT `fk_transacao_categoria1`
-    FOREIGN KEY (`categoria`)
-    REFERENCES `flowmoney-api`.`categoria` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_transacao_usuario1`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `flowmoney-api`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_transacao_conta1`
-    FOREIGN KEY (`conta`)
-    REFERENCES `flowmoney-api`.`conta` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `flowmoney-api`.`cartao_credito`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `flowmoney-api`.`cartao_credito` ;
@@ -178,6 +141,8 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
   `data_pagamento` DATE NULL,
   `data_vencimento` DATE NOT NULL,
   `conta` BIGINT(20) NULL,
+  `pagamento_parcial` TINYINT(1) NOT NULL DEFAULT 0,
+  `valor_pago` DECIMAL(10,2) NULL,
   `usuario` BIGINT(20) NOT NULL,
   `cartao_credito` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
@@ -201,6 +166,50 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = '	';
+
+
+-- -----------------------------------------------------
+-- Table `flowmoney-api`.`transacao`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `flowmoney-api`.`transacao` ;
+
+CREATE TABLE IF NOT EXISTS `flowmoney-api`.`transacao` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `valor` DECIMAL(10,2) NOT NULL,
+  `tipo` SMALLINT(1) NOT NULL,
+  `descricao` VARCHAR(100) NOT NULL,
+  `data` DATE NOT NULL,
+  `categoria` BIGINT(20) NOT NULL,
+  `usuario` BIGINT(20) NOT NULL,
+  `conta` BIGINT(20) NOT NULL,
+  `efetuada` TINYINT(1) NOT NULL DEFAULT 0,
+  `fatura` BIGINT(20) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_transacao_categoria1_idx` (`categoria` ASC) VISIBLE,
+  INDEX `fk_transacao_usuario1_idx` (`usuario` ASC) VISIBLE,
+  INDEX `fk_transacao_conta1_idx` (`conta` ASC) VISIBLE,
+  INDEX `fk_transacao_fatura1_idx` (`fatura` ASC) VISIBLE,
+  CONSTRAINT `fk_transacao_categoria1`
+    FOREIGN KEY (`categoria`)
+    REFERENCES `flowmoney-api`.`categoria` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_transacao_usuario1`
+    FOREIGN KEY (`usuario`)
+    REFERENCES `flowmoney-api`.`usuario` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_transacao_conta1`
+    FOREIGN KEY (`conta`)
+    REFERENCES `flowmoney-api`.`conta` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_transacao_fatura1`
+    FOREIGN KEY (`fatura`)
+    REFERENCES `flowmoney-api`.`fatura` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------

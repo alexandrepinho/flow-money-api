@@ -60,8 +60,7 @@ public class LancamentoFaturaService extends AbstractService<LancamentoFatura> {
 		montarLancamentoParcelado(lancamentoFaturaDTO, authentication, lancamentosFatura, lancamentoFatura, fatura,
 				valorPorParcela);
 
-		List<LancamentoFatura> lancamentosFaturaSalvo = lancamentoFaturaRepository.saveAll(lancamentosFatura);
-		return lancamentosFaturaSalvo;
+		return lancamentoFaturaRepository.saveAll(lancamentosFatura);
 	}
 
 	public LancamentoFaturaDTO editarLancamento(Long id, LancamentoFaturaDTO lancamentoFaturaDTO,

@@ -12,16 +12,18 @@ import com.flowmoney.api.model.Fatura;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FaturaDTO {
 
-	@NotNull(message =  "Valor Total obrigatório")
+	@NotNull(message = "Valor Total obrigatório")
 	private BigDecimal valorTotal;
 	private boolean pago;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataPagamento;
-	@NotNull(message =  "Data de Vencimento obrigatória")
+	@NotNull(message = "Data de Vencimento obrigatória")
 	@JsonFormat(pattern = "yyyy-M-dd")
 	private LocalDate dataVencimento;
 	@NotNull
 	private IdentityDTO cartaoCredito;
+	private boolean pagamentoParcial;
+	private BigDecimal valorPago;
 
 	public BigDecimal getValorTotal() {
 		return valorTotal;
@@ -63,8 +65,24 @@ public class FaturaDTO {
 		this.dataVencimento = dataVencimento;
 	}
 
+	public boolean isPagamentoParcial() {
+		return pagamentoParcial;
+	}
+
+	public void setPagamentoParcial(boolean pagamentoParcial) {
+		this.pagamentoParcial = pagamentoParcial;
+	}
+
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago;
+	}
+
 	public Fatura transformarParaEntidade() {
-		return new Fatura(this.pago, this.valorTotal, this.cartaoCredito, this.dataPagamento, this.dataVencimento);
+		return new Fatura(this.pago, this.valorTotal, this.cartaoCredito, this.dataPagamento, this.dataVencimento, this.pagamentoParcial, this.valorPago);
 	}
 
 }
