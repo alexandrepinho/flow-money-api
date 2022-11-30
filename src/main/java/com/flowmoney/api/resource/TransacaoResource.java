@@ -31,12 +31,8 @@ import com.flowmoney.api.dto.TotalCategoriaMesDTO;
 import com.flowmoney.api.dto.TransacaoDTO;
 import com.flowmoney.api.dto.TransacaoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
-import com.flowmoney.api.model.Conta;
-import com.flowmoney.api.model.Fatura;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Usuario;
-import com.flowmoney.api.repository.ContaRepository;
-import com.flowmoney.api.repository.FaturaRepository;
 import com.flowmoney.api.repository.TransacaoRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.repository.filter.TransacaoFilter;
@@ -57,12 +53,6 @@ public class TransacaoResource {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-
-	@Autowired
-	private ContaRepository contaRepository;
-	
-	@Autowired
-	private FaturaRepository faturaRepository;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -112,15 +102,7 @@ public class TransacaoResource {
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id, Authentication authentication) {
-		Transacao transacao = transacaoRepository.findById(id).orElse(null);
-		Conta conta = transacao.getConta();
-		conta.retirarEfeitoValorTransacao(transacao);
-		contaRepository.save(conta);
-		Fatura fatura = transacao.getFatura();
-		fatura.setPago(false);
-		faturaRepository.save(fatura);
-		atribuirUsuario(transacao, authentication);
-		transacaoRepository.deleteById(id);
+		transacaoService.removerTransacao(id, authentication);
 	}
 
 	@GetMapping("/totalCategoriaMesAno")
