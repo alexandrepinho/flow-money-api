@@ -17,6 +17,7 @@ public class TransacaoResponseDTO {
 	private LocalDate data;
 	private CategoriaResponseDTO categoria;
 	private ContaResponseDTO conta;
+	private FaturaDTO fatura;
 
 	public Long getId() {
 		return id;
@@ -76,6 +77,14 @@ public class TransacaoResponseDTO {
 
 	public Transacao transformarParaEntidade() {
 		return new Transacao(valor, tipo, descricao, data, categoria, conta);
+	}
+
+	public FaturaDTO getFatura() {
+		return fatura;
+	}
+
+	public void setFatura(FaturaDTO fatura) {
+		this.fatura = fatura;
 	}
 
 }

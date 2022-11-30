@@ -83,10 +83,6 @@ public class FaturaService extends AbstractService<Fatura> {
 		Fatura fatura = faturaDTO.transformarParaEntidade();
 		fatura.setPago(true);
 		fatura.setId(id);
-
-		if (faturaDTO.getValorPago().compareTo(fatura.getValorTotal()) > 0) {
-			throw new ValorPagoFaturaInvalidoException();
-		}
 		
 		fatura.setPagamentoParcial(
 				faturaDTO.getValorPago().compareTo(fatura.getValorTotal()) < 0 || faturaDTO.isPagamentoParcial());
@@ -101,6 +97,11 @@ public class FaturaService extends AbstractService<Fatura> {
 		Usuario usuario = usuarioRepository.findByEmail(userName).orElse(null);
 
 		if (faturaDTO.isPagamentoParcial()) {
+			
+			if (faturaDTO.getValorPago().compareTo(fatura.getValorTotal()) >= 0) {
+				throw new ValorPagoFaturaInvalidoException();
+			}
+			
 			Transacao transacaoPagamentoParcial = gerarTransacaoPagamentoParcialFatura(faturaDTO, conta, usuario);
 
 			fatura.getTransacoes().add(transacaoPagamentoParcial);
