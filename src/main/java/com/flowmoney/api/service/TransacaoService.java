@@ -3,11 +3,11 @@ package com.flowmoney.api.service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
+import com.flowmoney.api.model.AbstractEntity;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Fatura;
@@ -84,17 +84,32 @@ public class TransacaoService extends AbstractService<Transacao> {
 
 	}
 
-	public void removerTransacao(Long id, Authentication authentication) {
+	public void removerTransacao(Long id) {
 		Transacao transacao = transacaoRepository.findById(id).orElse(null);
-		Conta conta = transacao.getConta();
-		conta.retirarEfeitoValorTransacao(transacao);
-		contaRepository.save(conta);
+
+		if (transacao == null) {
+			throw new EmptyResultDataAccessException(1);
+		}
 		Fatura fatura = transacao.getFatura();
+
 		if (fatura != null) {
+
+			for (Transacao t : fatura.getTransacoes()) {
+				Conta conta = transacao.getConta();
+				conta.retirarEfeitoValorTransacao(t);
+				contaRepository.save(conta);
+			}
+
+			transacaoRepository.deleteByIdIn(fatura.getTransacoes().stream().map(AbstractEntity::getId).toList());
+
 			fatura.setPago(false);
 			faturaRepository.save(fatura);
+		} else {
+			Conta conta = transacao.getConta();
+			conta.retirarEfeitoValorTransacao(transacao);
+			contaRepository.save(conta);
+			transacaoRepository.deleteById(id);
 		}
-		transacaoRepository.deleteById(id);
 	}
 
 }

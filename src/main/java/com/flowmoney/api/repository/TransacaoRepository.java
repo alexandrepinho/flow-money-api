@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.flowmoney.api.dto.TotalCategoriaMesDTO;
 import com.flowmoney.api.model.Transacao;
@@ -24,6 +26,11 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long>, Tra
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
 
 	public List<Transacao> findByCategoriaId(Long id);
+	
+	@Transactional
+	@Modifying
+	@Query("delete from Transacao t where t.id IN :ids")
+	public void deleteByIdIn(@Param("ids") List<Long> ids);
 
 	@Query(value = "SELECT SUM(t.valor) FROM Transacao t JOIN t.categoria "
 			+ "WHERE t.data BETWEEN :dataInicial AND :dataFinal "

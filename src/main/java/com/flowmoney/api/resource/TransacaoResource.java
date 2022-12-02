@@ -101,8 +101,8 @@ public class TransacaoResource {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long id, Authentication authentication) {
-		transacaoService.removerTransacao(id, authentication);
+	public void remover(@PathVariable Long id) {
+		transacaoService.removerTransacao(id);
 	}
 
 	@GetMapping("/totalCategoriaMesAno")

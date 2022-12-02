@@ -23,6 +23,8 @@ public class FaturaResponseDTO {
 	private IdentityDTO conta;
 	@NotNull
 	private IdentityDTO cartaoCredito;
+	private boolean pagamentoParcial;
+	private BigDecimal valorPago;
 
 	public Long getId() {
 		return id;
@@ -80,9 +82,26 @@ public class FaturaResponseDTO {
 		this.dataVencimento = dataVencimento;
 	}
 
+	public boolean isPagamentoParcial() {
+		return pagamentoParcial;
+	}
+
+	public void setPagamentoParcial(boolean pagamentoParcial) {
+		this.pagamentoParcial = pagamentoParcial;
+	}
+
 	public Fatura transformarParaEntidade() {
 
-		return new Fatura(this.id, this.dataPagamento, this.pago, this.valorTotal, this.cartaoCredito, this.dataVencimento);
+		return new Fatura(this.id, this.dataPagamento, this.pago, this.valorTotal, this.cartaoCredito,
+				this.dataVencimento);
+	}
+
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago;
 	}
 
 }
