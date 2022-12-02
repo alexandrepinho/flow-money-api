@@ -3,9 +3,11 @@ package com.flowmoney.api.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -50,6 +52,9 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 	@ManyToOne
 	@JoinColumn(name = "categoria")
 	private Categoria categoria;
+
+	@OneToOne(mappedBy = "lancamentoDiferencaParcial", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Fatura faturaPassadaParcial;
 
 	public LancamentoFatura(LocalDate data, String descricao, boolean parcelado, Integer qtdParcelas,
 			IdentityDTO fatura, IdentityDTO cartaoCredito, IdentityDTO categoria, BigDecimal valor) {
@@ -144,6 +149,14 @@ public class LancamentoFatura extends AbstractEntity<Long> {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
+	}
+
+	public Fatura getFaturaPassadaParcial() {
+		return faturaPassadaParcial;
+	}
+
+	public void setFaturaPassadaParcial(Fatura faturaPassadaParcial) {
+		this.faturaPassadaParcial = faturaPassadaParcial;
 	}
 
 }

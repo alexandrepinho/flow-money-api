@@ -130,6 +130,50 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `flowmoney-api`.`lancamento_fatura`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `flowmoney-api`.`lancamento_fatura` ;
+
+CREATE TABLE IF NOT EXISTS `flowmoney-api`.`lancamento_fatura` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `data` DATE NOT NULL,
+  `descricao` VARCHAR(45) NOT NULL,
+  `parcelado` TINYINT(1) ZEROFILL NOT NULL,
+  `qtd_parcelas` INT ZEROFILL NOT NULL,
+  `valor` DECIMAL(10,2) NOT NULL,
+  `fatura` BIGINT(20) NOT NULL,
+  `cartao_credito` BIGINT(20) NOT NULL,
+  `usuario` BIGINT(20) NOT NULL,
+  `categoria` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_lancamento_fatura_fatura1_idx` (`fatura` ASC) VISIBLE,
+  INDEX `fk_lancamento_fatura_cartao_credito1_idx` (`cartao_credito` ASC) VISIBLE,
+  INDEX `fk_lancamento_fatura_usuario1_idx` (`usuario` ASC) VISIBLE,
+  INDEX `fk_lancamento_fatura_categoria1_idx` (`categoria` ASC) VISIBLE,
+  CONSTRAINT `fk_lancamento_fatura_fatura1`
+    FOREIGN KEY (`fatura`)
+    REFERENCES `flowmoney-api`.`fatura` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_lancamento_fatura_cartao_credito1`
+    FOREIGN KEY (`cartao_credito`)
+    REFERENCES `flowmoney-api`.`cartao_credito` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_lancamento_fatura_usuario1`
+    FOREIGN KEY (`usuario`)
+    REFERENCES `flowmoney-api`.`usuario` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_lancamento_fatura_categoria1`
+    FOREIGN KEY (`categoria`)
+    REFERENCES `flowmoney-api`.`categoria` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `flowmoney-api`.`fatura`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `flowmoney-api`.`fatura` ;
@@ -145,10 +189,12 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
   `valor_pago` DECIMAL(10,2) NULL,
   `usuario` BIGINT(20) NOT NULL,
   `cartao_credito` BIGINT(20) NOT NULL,
+  `lancamento_diferenca_parcial` BIGINT(20) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_fatura_conta1_idx` (`conta` ASC) VISIBLE,
   INDEX `fk_fatura_usuario1_idx` (`usuario` ASC) VISIBLE,
   INDEX `fk_fatura_cartao_credito1_idx` (`cartao_credito` ASC) VISIBLE,
+  INDEX `fk_fatura_lancamento_fatura1_idx` (`lancamento_diferenca_parcial` ASC) VISIBLE,
   CONSTRAINT `fk_fatura_conta1`
     FOREIGN KEY (`conta`)
     REFERENCES `flowmoney-api`.`conta` (`id`)
@@ -162,6 +208,11 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`fatura` (
   CONSTRAINT `fk_fatura_cartao_credito1`
     FOREIGN KEY (`cartao_credito`)
     REFERENCES `flowmoney-api`.`cartao_credito` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fatura_lancamento_fatura1`
+    FOREIGN KEY (`lancamento_diferenca_parcial`)
+    REFERENCES `flowmoney-api`.`lancamento_fatura` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -207,50 +258,6 @@ CREATE TABLE IF NOT EXISTS `flowmoney-api`.`transacao` (
   CONSTRAINT `fk_transacao_fatura1`
     FOREIGN KEY (`fatura`)
     REFERENCES `flowmoney-api`.`fatura` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `flowmoney-api`.`lancamento_fatura`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `flowmoney-api`.`lancamento_fatura` ;
-
-CREATE TABLE IF NOT EXISTS `flowmoney-api`.`lancamento_fatura` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `data` DATE NOT NULL,
-  `descricao` VARCHAR(45) NOT NULL,
-  `parcelado` TINYINT(1) ZEROFILL NOT NULL,
-  `qtd_parcelas` INT ZEROFILL NOT NULL,
-  `valor` DECIMAL(10,2) NOT NULL,
-  `fatura` BIGINT(20) NOT NULL,
-  `cartao_credito` BIGINT(20) NOT NULL,
-  `usuario` BIGINT(20) NOT NULL,
-  `categoria` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_lancamento_fatura_fatura1_idx` (`fatura` ASC) VISIBLE,
-  INDEX `fk_lancamento_fatura_cartao_credito1_idx` (`cartao_credito` ASC) VISIBLE,
-  INDEX `fk_lancamento_fatura_usuario1_idx` (`usuario` ASC) VISIBLE,
-  INDEX `fk_lancamento_fatura_categoria1_idx` (`categoria` ASC) VISIBLE,
-  CONSTRAINT `fk_lancamento_fatura_fatura1`
-    FOREIGN KEY (`fatura`)
-    REFERENCES `flowmoney-api`.`fatura` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lancamento_fatura_cartao_credito1`
-    FOREIGN KEY (`cartao_credito`)
-    REFERENCES `flowmoney-api`.`cartao_credito` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lancamento_fatura_usuario1`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `flowmoney-api`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lancamento_fatura_categoria1`
-    FOREIGN KEY (`categoria`)
-    REFERENCES `flowmoney-api`.`categoria` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

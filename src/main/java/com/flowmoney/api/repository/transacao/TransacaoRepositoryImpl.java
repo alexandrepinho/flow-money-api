@@ -33,6 +33,7 @@ public class TransacaoRepositoryImpl implements TransacaoRepositoryQuery {
 
 		Predicate[] predicates = criarRestricoes(transacaoFilter, builder, root);
 		criteria.where(predicates);
+		criteria.orderBy(builder.desc(root.get(Transacao_.data)));
 
 		TypedQuery<Transacao> query = manager.createQuery(criteria);
 

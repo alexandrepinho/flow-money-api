@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -40,6 +41,10 @@ public class Fatura extends AbstractEntity<Long> {
 	@ManyToOne
 	@JoinColumn(name = "cartao_credito")
 	private CartaoCredito cartaoCredito;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "lancamento_diferenca_parcial")
+	private LancamentoFatura lancamentoDiferencaParcial;
 
 	@OneToMany(mappedBy = "fatura", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<LancamentoFatura> lancamentos = new ArrayList<>();
@@ -167,6 +172,14 @@ public class Fatura extends AbstractEntity<Long> {
 
 	public void setValorPago(BigDecimal valorPago) {
 		this.valorPago = valorPago;
+	}
+
+	public LancamentoFatura getLancamentoDiferencaParcial() {
+		return lancamentoDiferencaParcial;
+	}
+
+	public void setLancamentoDiferencaParcial(LancamentoFatura lancamentoDiferencaParcial) {
+		this.lancamentoDiferencaParcial = lancamentoDiferencaParcial;
 	}
 
 }

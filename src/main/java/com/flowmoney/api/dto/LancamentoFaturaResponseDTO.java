@@ -38,6 +38,8 @@ public class LancamentoFaturaResponseDTO {
 	@NotNull
 	private IdentityDTO categoria;
 
+	private FaturaResponseDTO faturaPassada;
+
 	public Long getId() {
 		return id;
 	}
@@ -108,6 +110,14 @@ public class LancamentoFaturaResponseDTO {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
+	}
+
+	public FaturaResponseDTO getFaturaPassada() {
+		return faturaPassada;
+	}
+
+	public void setFaturaPassada(FaturaResponseDTO faturaPassada) {
+		this.faturaPassada = faturaPassada;
 	}
 
 	public LancamentoFatura transformarParaEntidade() {

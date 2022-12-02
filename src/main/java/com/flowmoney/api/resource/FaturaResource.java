@@ -106,4 +106,11 @@ public class FaturaResource {
 		faturaRepository.deleteById(id);
 	}
 
+	@PutMapping("/reabrir/{id}")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public ResponseEntity<FaturaResponseDTO> reabrirFaturaPaga(@PathVariable Long id) {
+		return ResponseEntity.ok(modelMapper.map(faturaService.reabrirFaturaPaga(id), FaturaResponseDTO.class));
+	}
+
 }

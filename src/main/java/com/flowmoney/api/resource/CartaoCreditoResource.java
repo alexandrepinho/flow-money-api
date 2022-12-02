@@ -74,7 +74,7 @@ public class CartaoCreditoResource {
 	@GetMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
 	public List<CartaoCreditoResponseDTO> listar(String tipo, Authentication authentication) {
-		List<CartaoCreditoResponseDTO> cartoesResponseDTO = cartaoCreditoRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
+		return cartaoCreditoRepository.findByUsuarioEmail(getUserName(authentication)).stream().map(t -> {
 			return modelMapper.map(t, CartaoCreditoResponseDTO.class);
 		}).collect(Collectors.toList()).stream().map(c -> {
 			BigDecimal valorTotalUtilizado = faturaRepository.findByCartaoCreditoIdAndFaturaNaoPaga(c.getId());
@@ -82,7 +82,7 @@ public class CartaoCreditoResource {
 			c.setLimiteDisponivel(valorDisponivel);
 			return c;}).collect(Collectors.toList());
 		
-		return cartoesResponseDTO;
+
 	}
 
 	@GetMapping("/{id}")
