@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="transacoes-por-mes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="afa41487-9c9d-4b1f-adf4-caee814548eb">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="DT_INICIO" class="java.util.Date"/>
+	<parameter name="DT_FIM" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="tipo" class="com.flowmoney.api.model.enumeration.TipoTransacaoEnum"/>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="data" class="java.time.LocalDate"/>
+	<variable name="valor1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tipo}.getId() == 1 ? $F{valor}  : new BigDecimal(0)]]></variableExpression>
+	</variable>
+	<variable name="valor2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tipo}.getId() == 2 ? $F{valor} : new BigDecimal(0)]]></variableExpression>
+	</variable>
+	<variable name="saldo" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{valor2}.subtract($V{valor1})]]></variableExpression>
+	</variable>
+	<group name="Group1" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{tipo}]]></groupExpression>
+		<groupHeader>
+			<band height="26">
+				<rectangle>
+					<reportElement x="0" y="0" width="555" height="25" backcolor="#C7C7C7" uuid="1e7a4262-62ce-4110-b56c-08fbffc04b29">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</rectangle>
+				<line>
+					<reportElement x="80" y="0" width="1" height="25" uuid="a4a05615-fb29-44b6-aff8-84c7a4b2e74e">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<line>
+					<reportElement x="480" y="0" width="1" height="25" uuid="03763142-11b5-4ef4-9438-e1eb16a52759">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<staticText>
+					<reportElement x="1" y="1" width="80" height="23" uuid="7f9abdd4-27c9-43d8-881e-982d27bfcd78">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Data]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="80" y="1" width="400" height="24" uuid="a993e860-5b51-4cdd-8f88-34292990fcb2">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Descrição]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="481" y="0" width="74" height="24" uuid="e9c59aa0-8f6d-4f50-9008-58b0da615f6d"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Valor]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="53">
+				<textField>
+					<reportElement x="0" y="11" width="380" height="30" uuid="e48466b6-8372-4b1d-bc96-d5ca8209b5f2"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Valor Total de " + $F{tipo}.getDescricao() + " : " +($F{tipo}.getId()==1 ? new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor1}) : new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor2}))]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="64" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="1" y="17" width="554" height="30" uuid="a658b6b5-7d33-4455-b863-a97a97c43191"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Relatório de Transações por período de " +DATEFORMAT($P{DT_INICIO}, "dd/MM/yyyy") + " até "+ DATEFORMAT($P{DT_FIM}, "dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<line>
+				<reportElement x="0" y="0" width="1" height="25" uuid="b2a9cb70-c73d-4d40-848c-26c3b2380786">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="80" y="0" width="1" height="25" uuid="5b98fad8-be49-4cb1-9d30-73e84dc3e766">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="480" y="0" width="1" height="25" uuid="43485829-8499-40f0-82b3-2e9fad4f67b3">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="554" y="0" width="1" height="25" uuid="4a24dd30-b4ed-445a-996a-bd74738c1c46">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="1" y="25" width="554" height="1" uuid="7d536aaf-a60e-4e00-9bb2-6154f8af16ca">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField pattern="EEEE d MMMM yyyy">
+				<reportElement x="5" y="1" width="69" height="23" uuid="2c6c05b3-3067-44f0-81e6-a47c66718c86">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[DATEFORMAT(java.util.Date.from($F{data}.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()),"dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="379" height="24" uuid="3f8fdd3d-a21e-45b2-adfb-4b7fca34a979"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00;¤-#,##0.00">
+				<reportElement x="490" y="1" width="55" height="23" uuid="c1403fb3-d460-4e58-9538-21100112d162"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="145" height="25" uuid="1c729531-0b48-4e06-b4fa-4ea71c8cf08d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Data " + DATEFORMAT(TODAY(), "dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="451" y="3" width="100" height="29" uuid="9b309be4-74e1-4acb-9edd-6674d51bb944"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="37">
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="-1" y="19" width="556" height="18" uuid="7c61741d-418f-4ee5-86bb-2952fda4738e"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Saldo no período: " + (new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor2})) + " - " +(new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor1})) + " = "+ (new java.text.DecimalFormat("¤ #,##0.00;- ¤ #,##0.00").format($V{saldo}))]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

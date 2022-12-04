@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.SemDadosParaRelatorioException;
 import com.flowmoney.api.exceptionhandler.exception.ContaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
@@ -82,7 +83,8 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 			CategoriaAssociadaTransacaoException.class, ContaAssociadaTransacaoException.class,
 			ObjetivoInexistenteException.class, CartaoCreditoInexistenteException.class,
 			FaturaExistenteNoPeriodoException.class, FaturaNaoEncontradaException.class,
-			ValorLimiteCreditoExcedidoException.class, ValorPagoFaturaInvalidoException.class })
+			ValorLimiteCreditoExcedidoException.class, ValorPagoFaturaInvalidoException.class,
+			SemDadosParaRelatorioException.class })
 	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
 
 		String message = "";
@@ -118,13 +120,17 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		if (ex instanceof FaturaNaoEncontradaException) {
 			message = "fatura.nao-encontrada";
 		}
-		
+
 		if (ex instanceof ValorLimiteCreditoExcedidoException) {
 			message = "cartao.valor-excedera-limite";
 		}
-		
+
 		if (ex instanceof ValorPagoFaturaInvalidoException) {
 			message = "fatura.valor-pago-invalido";
+		}
+		
+		if (ex instanceof SemDadosParaRelatorioException) {
+			message = "relatorio.sem-dados-para-gerar";
 		}
 
 		String mensagemUsuario = messageSource.getMessage(message, null, LocaleContextHolder.getLocale());

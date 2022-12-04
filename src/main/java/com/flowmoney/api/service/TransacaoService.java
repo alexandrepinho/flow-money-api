@@ -1,10 +1,19 @@
 package com.flowmoney.api.service;
 
+import java.io.InputStream;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.flowmoney.api.dto.TransacaoRelatorioMensalDTO;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
 import com.flowmoney.api.model.AbstractEntity;
@@ -16,6 +25,12 @@ import com.flowmoney.api.repository.CategoriaRepository;
 import com.flowmoney.api.repository.ContaRepository;
 import com.flowmoney.api.repository.FaturaRepository;
 import com.flowmoney.api.repository.TransacaoRepository;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class TransacaoService extends AbstractService<Transacao> {
@@ -31,6 +46,26 @@ public class TransacaoService extends AbstractService<Transacao> {
 
 	@Autowired
 	private FaturaRepository faturaRepository;
+
+	public byte[] relatorioPorPeriodo(LocalDate inicio, LocalDate fim) throws JRException {
+		List<TransacaoRelatorioMensalDTO> dados = transacaoRepository.porPeriodo(inicio, fim);
+
+		if (dados == null || dados.isEmpty()) {
+			return new byte[0];
+		}
+
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("DT_INICIO", Date.valueOf(inicio));
+		parametros.put("DT_FIM", Date.valueOf(fim));
+		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+
+		InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/transacoes-por-periodo.jasper");
+
+		JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+				new JRBeanCollectionDataSource(dados));
+
+		return JasperExportManager.exportReportToPdf(jasperPrint);
+	}
 
 	public Transacao salvar(Transacao transacao) {
 

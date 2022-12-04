@@ -1,5 +1,6 @@
 package com.flowmoney.api.repository.transacao;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.ObjectUtils;
 
+import com.flowmoney.api.dto.TransacaoRelatorioMensalDTO;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Transacao_;
 import com.flowmoney.api.repository.filter.TransacaoFilter;
@@ -85,6 +87,26 @@ public class TransacaoRepositoryImpl implements TransacaoRepositoryQuery {
 
 		criteria.select(builder.count(root));
 		return manager.createQuery(criteria).getSingleResult();
+	}
+
+	@Override
+	public List<TransacaoRelatorioMensalDTO> porPeriodo(LocalDate inicio, LocalDate fim) {
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<TransacaoRelatorioMensalDTO> criteriaQuery = criteriaBuilder
+				.createQuery(TransacaoRelatorioMensalDTO.class);
+		Root<Transacao> root = criteriaQuery.from(Transacao.class);
+
+		criteriaQuery.select(criteriaBuilder.construct(TransacaoRelatorioMensalDTO.class, root.get(Transacao_.tipo),
+				root.get(Transacao_.descricao), root.get(Transacao_.valor), root.get(Transacao_.data)));
+
+		criteriaQuery.where(criteriaBuilder.greaterThanOrEqualTo(root.get(Transacao_.data), inicio),
+				criteriaBuilder.lessThanOrEqualTo(root.get(Transacao_.data), fim));
+
+	
+
+		TypedQuery<TransacaoRelatorioMensalDTO> typedQuery = manager.createQuery(criteriaQuery);
+
+		return typedQuery.getResultList();
 	}
 
 }

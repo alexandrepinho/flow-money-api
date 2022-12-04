@@ -2,6 +2,7 @@ package com.flowmoney.api.resource;
 
 import static com.flowmoney.api.util.UsuarioUtil.getUserName;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -31,12 +35,15 @@ import com.flowmoney.api.dto.TotalCategoriaMesDTO;
 import com.flowmoney.api.dto.TransacaoDTO;
 import com.flowmoney.api.dto.TransacaoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
+import com.flowmoney.api.exceptionhandler.exception.SemDadosParaRelatorioException;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Usuario;
 import com.flowmoney.api.repository.TransacaoRepository;
 import com.flowmoney.api.repository.UsuarioRepository;
 import com.flowmoney.api.repository.filter.TransacaoFilter;
 import com.flowmoney.api.service.TransacaoService;
+
+import net.sf.jasperreports.engine.JRException;
 
 @RestController
 @RequestMapping("/transacoes")
@@ -56,6 +63,20 @@ public class TransacaoResource {
 
 	@Autowired
 	private ModelMapper modelMapper;
+
+	@GetMapping("/relatorios/por-periodo")
+	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
+	public ResponseEntity<byte[]> relatorioPorPeriodo(
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fim) throws JRException {
+		byte[] relatorio = transacaoService.relatorioPorPeriodo(inicio, fim);
+
+		if (relatorio.length == 0) {
+			throw new SemDadosParaRelatorioException();
+		}
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE).body(relatorio);
+	}
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('CRUD_TRANSACOES')")
