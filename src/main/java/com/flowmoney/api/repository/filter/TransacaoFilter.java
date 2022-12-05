@@ -9,9 +9,9 @@ import com.flowmoney.api.model.Usuario;
 public class TransacaoFilter {
 
 	private String descricao;
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataDe;
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataAte;
 
 	private Usuario usuario;
