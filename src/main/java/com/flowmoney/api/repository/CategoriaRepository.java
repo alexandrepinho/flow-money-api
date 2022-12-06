@@ -25,5 +25,7 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 	
 	@Query(value = "SELECT c FROM Categoria c LEFT JOIN FETCH c.transacoes t WHERE c.id=:id AND c.usuario.email=:email")
 	public Optional<Categoria> findByIdAndUsuarioEmailFetchTransacoes(Long id, String email);
+	
+	public int countByUsuarioEmailAndNomeAndTipo(String emailUsuario, String nome, TipoCategoriaEnum tipo);
 
 }

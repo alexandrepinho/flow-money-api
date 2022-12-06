@@ -14,7 +14,7 @@ INSERT INTO usuario_permissao (usuario, permissao) values (1, 2);
 -- tipos categorias especiais
 INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Saída', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Entrada', 2, 1);
-INSERT INTO categoria (nome, tipo, usuario) values ('Pagamento parcial de cartão', 2, 1);
+INSERT INTO categoria (nome, tipo, usuario) values ('Pagamento parcial de cartão', 1, 1);
 -- tipo saídas
 INSERT INTO categoria (nome, tipo, usuario) values ('Casa', 1, 1);
 INSERT INTO categoria (nome, tipo, usuario) values ('Educação', 1, 1);
@@ -41,7 +41,7 @@ INSERT INTO usuario_permissao (usuario, permissao) values (3, 2);
 -- tipos categorias especiais
 INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Saída', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Entrada', 2, 2);
-INSERT INTO categoria (nome, tipo, usuario) values ('Pagamento parcial de cartão', 2, 2); 
+INSERT INTO categoria (nome, tipo, usuario) values ('Pagamento parcial de cartão', 1, 2); 
 -- tipo saídas
 INSERT INTO categoria (nome, tipo, usuario) values ('Casa', 1, 2);
 INSERT INTO categoria (nome, tipo, usuario) values ('Educação', 1, 2);
@@ -60,7 +60,7 @@ INSERT INTO conta (descricao, saldo, usuario) values('Conta 2', 2000, 2);
 -- tipos categorias especiais
 INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Saída', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values ('Reajuste Entrada', 2, 3);
-INSERT INTO categoria (nome, tipo, usuario) values ('Pagamento parcial de cartão', 2, 3);  
+INSERT INTO categoria (nome, tipo, usuario) values ('Pagamento parcial de cartão', 1, 3);  
 -- tipo saídas
 INSERT INTO categoria (nome, tipo, usuario) values ('Supermercado', 1, 3);
 INSERT INTO categoria (nome, tipo, usuario) values ('Transporte', 1, 3);

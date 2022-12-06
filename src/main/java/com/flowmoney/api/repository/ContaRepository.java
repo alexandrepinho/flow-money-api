@@ -22,5 +22,7 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
 	public Optional<Conta> findByIdAndUsuarioEmailFetchTransacoes(Long id, String email);
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
+	
+	public int countByUsuarioEmailAndDescricao(String emailUsuario, String descricao);
 
 }

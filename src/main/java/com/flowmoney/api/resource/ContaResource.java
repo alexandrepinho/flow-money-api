@@ -31,6 +31,7 @@ import com.flowmoney.api.dto.ContaDTO;
 import com.flowmoney.api.dto.ContaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.NomeContaJaExisteException;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Conta;
 import com.flowmoney.api.model.Transacao;
@@ -68,6 +69,9 @@ public class ContaResource {
 	public ResponseEntity<ContaDTO> criar(@Valid @RequestBody ContaDTO contaDTO, HttpServletResponse response,
 			Authentication authentication) {
 		Conta conta = contaDTO.transformarParaEntidade();
+		if (contaRepository.countByUsuarioEmailAndDescricao(getUserName(authentication), conta.getDescricao()) > 0) {
+			throw new NomeContaJaExisteException();
+		}
 		atribuirUsuario(conta, authentication);
 		Conta contaSalva = contaRepository.save(conta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, contaSalva.getId()));

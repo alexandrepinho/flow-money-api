@@ -30,6 +30,8 @@ import com.flowmoney.api.exceptionhandler.exception.ContaAssociadaTransacaoExcep
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaNaoEncontradaException;
+import com.flowmoney.api.exceptionhandler.exception.NomeCategoriaJaExisteException;
+import com.flowmoney.api.exceptionhandler.exception.NomeContaJaExisteException;
 import com.flowmoney.api.exceptionhandler.exception.ObjetivoInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.ValorLimiteCreditoExcedidoException;
 import com.flowmoney.api.exceptionhandler.exception.ValorPagoFaturaInvalidoException;
@@ -84,7 +86,7 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 			ObjetivoInexistenteException.class, CartaoCreditoInexistenteException.class,
 			FaturaExistenteNoPeriodoException.class, FaturaNaoEncontradaException.class,
 			ValorLimiteCreditoExcedidoException.class, ValorPagoFaturaInvalidoException.class,
-			SemDadosParaRelatorioException.class })
+			SemDadosParaRelatorioException.class, NomeCategoriaJaExisteException.class, NomeContaJaExisteException.class })
 	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
 
 		String message = "";
@@ -131,6 +133,14 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		if (ex instanceof SemDadosParaRelatorioException) {
 			message = "relatorio.sem-dados-para-gerar";
+		}
+		
+		if (ex instanceof NomeCategoriaJaExisteException) {
+			message = "categoria.nome-ja-existe";
+		}
+		
+		if (ex instanceof NomeContaJaExisteException) {
+			message = "conta.descricao-ja-existe";
 		}
 
 		String mensagemUsuario = messageSource.getMessage(message, null, LocaleContextHolder.getLocale());

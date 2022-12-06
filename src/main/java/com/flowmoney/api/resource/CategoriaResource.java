@@ -29,6 +29,7 @@ import com.flowmoney.api.dto.CategoriaDTO;
 import com.flowmoney.api.dto.CategoriaResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.NomeCategoriaJaExisteException;
 import com.flowmoney.api.model.Categoria;
 import com.flowmoney.api.model.Transacao;
 import com.flowmoney.api.model.Usuario;
@@ -53,7 +54,7 @@ public class CategoriaResource {
 
 	@Autowired
 	private CategoriaService categoriaService;
-	
+
 	@Autowired
 	private ContaRepository contaRepository;
 
@@ -65,6 +66,12 @@ public class CategoriaResource {
 	public ResponseEntity<CategoriaDTO> criar(@Valid @RequestBody CategoriaDTO categoriaDTO,
 			HttpServletResponse response, Authentication authentication) {
 		Categoria categoria = categoriaDTO.transformarParaEntidade();
+
+		if (categoriaRepository.countByUsuarioEmailAndNomeAndTipo(getUserName(authentication), categoria.getNome(),
+				categoria.getTipo()) > 0) {
+			throw new NomeCategoriaJaExisteException();
+		}
+
 		atribuirUsuario(categoria, authentication);
 		Categoria categoriaSalva = categoriaRepository.save(categoria);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getId()));
@@ -77,7 +84,8 @@ public class CategoriaResource {
 		if (tipo != null) {
 			return categoriaRepository
 					.findByUsuarioEmailAndTipo(getUserName(authentication), TipoCategoriaEnum.valueOf(tipo)).stream()
-					.filter(c -> !c.getNome().contains("Reajuste Entrada") && !c.getNome().contains("Reajuste Saída"))
+					.filter(c -> !c.getNome().contains("Reajuste Entrada") && !c.getNome().contains("Reajuste Saída")
+							&& !c.getNome().contains("Pagamento parcial de cartão"))
 					.map(t -> {
 						return modelMapper.map(t, CategoriaResponseDTO.class);
 					}).collect(Collectors.toList());
@@ -95,7 +103,8 @@ public class CategoriaResource {
 					.findByUsuarioEmailAndTipoAndArquivada(getUserName(authentication), TipoCategoriaEnum.valueOf(tipo),
 							false)
 					.stream()
-					.filter(c -> !c.getNome().contains("Reajuste Entrada") && !c.getNome().contains("Reajuste Saída"))
+					.filter(c -> !c.getNome().contains("Reajuste Entrada") && !c.getNome().contains("Reajuste Saída")
+							&& !c.getNome().contains("Pagamento parcial de cartão"))
 					.map(t -> {
 						return modelMapper.map(t, CategoriaResponseDTO.class);
 					}).collect(Collectors.toList());
@@ -139,11 +148,11 @@ public class CategoriaResource {
 	public void remover(@PathVariable Long id, Authentication authentication) {
 		Categoria categoria = categoriaRepository
 				.findByIdAndUsuarioEmailFetchTransacoes(id, getUserName(authentication)).orElse(null);
-		
+
 		if (categoria == null) {
 			throw new CategoriaInexistenteException();
 		}
-		
+
 		for (Transacao transacao : categoria.getTransacoes()) {
 			transacao.getConta().retirarEfeitoValorTransacao(transacao);
 			contaRepository.save(transacao.getConta());
