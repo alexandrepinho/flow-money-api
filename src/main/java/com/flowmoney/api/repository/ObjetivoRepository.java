@@ -16,5 +16,7 @@ public interface ObjetivoRepository extends JpaRepository<Objetivo, Long> {
 	public Optional<Objetivo> findByIdAndUsuarioEmail(Long id, String email);
 
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
+	
+	public int countByUsuarioEmailAndNome(String emailUsuario, String nome);
 
 }

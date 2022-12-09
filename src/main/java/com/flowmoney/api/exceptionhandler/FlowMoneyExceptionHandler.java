@@ -25,14 +25,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteException;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.CategoriaInexistenteException;
-import com.flowmoney.api.exceptionhandler.exception.SemDadosParaRelatorioException;
 import com.flowmoney.api.exceptionhandler.exception.ContaAssociadaTransacaoException;
 import com.flowmoney.api.exceptionhandler.exception.ContaInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.DescricaoCartaoCreditoJaExisteException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaExistenteNoPeriodoException;
 import com.flowmoney.api.exceptionhandler.exception.FaturaNaoEncontradaException;
 import com.flowmoney.api.exceptionhandler.exception.NomeCategoriaJaExisteException;
 import com.flowmoney.api.exceptionhandler.exception.NomeContaJaExisteException;
+import com.flowmoney.api.exceptionhandler.exception.NomeObjetivoJaExisteException;
 import com.flowmoney.api.exceptionhandler.exception.ObjetivoInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.SemDadosParaRelatorioException;
 import com.flowmoney.api.exceptionhandler.exception.ValorLimiteCreditoExcedidoException;
 import com.flowmoney.api.exceptionhandler.exception.ValorPagoFaturaInvalidoException;
 
@@ -86,7 +88,9 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 			ObjetivoInexistenteException.class, CartaoCreditoInexistenteException.class,
 			FaturaExistenteNoPeriodoException.class, FaturaNaoEncontradaException.class,
 			ValorLimiteCreditoExcedidoException.class, ValorPagoFaturaInvalidoException.class,
-			SemDadosParaRelatorioException.class, NomeCategoriaJaExisteException.class, NomeContaJaExisteException.class })
+			SemDadosParaRelatorioException.class, NomeCategoriaJaExisteException.class,
+			NomeContaJaExisteException.class, NomeObjetivoJaExisteException.class,
+			DescricaoCartaoCreditoJaExisteException.class })
 	public ResponseEntity<Object> handleObjetoInexistenteException(Exception ex) {
 
 		String message = "";
@@ -130,17 +134,25 @@ public class FlowMoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		if (ex instanceof ValorPagoFaturaInvalidoException) {
 			message = "fatura.valor-pago-invalido";
 		}
-		
+
 		if (ex instanceof SemDadosParaRelatorioException) {
 			message = "relatorio.sem-dados-para-gerar";
 		}
-		
+
 		if (ex instanceof NomeCategoriaJaExisteException) {
 			message = "categoria.nome-ja-existe";
 		}
-		
+
 		if (ex instanceof NomeContaJaExisteException) {
 			message = "conta.descricao-ja-existe";
+		}
+
+		if (ex instanceof NomeObjetivoJaExisteException) {
+			message = "objetivo.nome-ja-existe";
+		}
+		
+		if (ex instanceof DescricaoCartaoCreditoJaExisteException) {
+			message = "cartao.descricao-ja-existe";
 		}
 
 		String mensagemUsuario = messageSource.getMessage(message, null, LocaleContextHolder.getLocale());

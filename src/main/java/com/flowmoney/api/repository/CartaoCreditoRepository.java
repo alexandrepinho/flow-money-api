@@ -17,5 +17,7 @@ public interface CartaoCreditoRepository extends JpaRepository<CartaoCredito, Lo
 	
 	public void deleteByIdAndUsuarioEmail(Long id, String email);
 	
+	public int countByUsuarioEmailAndDescricao(String emailUsuario, String descricao);
+	
 
 }

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flowmoney.api.dto.ObjetivoDTO;
 import com.flowmoney.api.dto.ObjetivoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
+import com.flowmoney.api.exceptionhandler.exception.NomeObjetivoJaExisteException;
 import com.flowmoney.api.exceptionhandler.exception.ObjetivoInexistenteException;
 import com.flowmoney.api.model.Objetivo;
 import com.flowmoney.api.model.Usuario;
@@ -59,6 +60,11 @@ public class ObjetivoResource {
 	public ResponseEntity<ObjetivoDTO> criar(@Valid @RequestBody ObjetivoDTO objetivoDTO, HttpServletResponse response,
 			Authentication authentication) {
 		Objetivo objetivo = objetivoDTO.transformarParaEntidade();
+
+		if (objetivoRepository.countByUsuarioEmailAndNome(getUserName(authentication), objetivo.getNome()) > 0) {
+			throw new NomeObjetivoJaExisteException();
+		}
+
 		atribuirUsuario(objetivo, authentication);
 		Objetivo objetivoSalvo = objetivoRepository.save(objetivo);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, objetivoSalvo.getId()));

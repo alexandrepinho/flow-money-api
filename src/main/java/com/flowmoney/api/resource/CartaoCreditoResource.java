@@ -30,6 +30,7 @@ import com.flowmoney.api.dto.CartaoCreditoDTO;
 import com.flowmoney.api.dto.CartaoCreditoResponseDTO;
 import com.flowmoney.api.event.RecursoCriadoEvent;
 import com.flowmoney.api.exceptionhandler.exception.CartaoCreditoInexistenteException;
+import com.flowmoney.api.exceptionhandler.exception.DescricaoCartaoCreditoJaExisteException;
 import com.flowmoney.api.model.CartaoCredito;
 import com.flowmoney.api.model.Usuario;
 import com.flowmoney.api.repository.CartaoCreditoRepository;
@@ -64,6 +65,11 @@ public class CartaoCreditoResource {
 	public ResponseEntity<CartaoCreditoDTO> criar(@Valid @RequestBody CartaoCreditoDTO cartaoCreditoDTO,
 			HttpServletResponse response, Authentication authentication) {
 		CartaoCredito cartaoCredito = cartaoCreditoDTO.transformarParaEntidade();
+		
+		if (cartaoCreditoRepository.countByUsuarioEmailAndDescricao(getUserName(authentication), cartaoCredito.getDescricao()) > 0) {
+			throw new DescricaoCartaoCreditoJaExisteException();
+		}
+		
 		atribuirUsuario(cartaoCredito, authentication);
 		CartaoCredito cartaoCreditoSalvo = cartaoCreditoRepository.save(cartaoCredito);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, cartaoCreditoSalvo.getId()));

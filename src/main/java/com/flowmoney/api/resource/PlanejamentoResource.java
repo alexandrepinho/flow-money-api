@@ -63,9 +63,7 @@ public class PlanejamentoResource {
 	public ResponseEntity<PlanejamentoDTO> criar(@Valid @RequestBody PlanejamentoDTO planejamentoDTO,
 			HttpServletResponse response, Authentication authentication) {
 		Planejamento planejamento = planejamentoDTO.transformarParaEntidade();
-//		for (PlanejamentoCategoria planCategoria : planejamento.getPlanejamentosCategorias()) {
-//			planCategoria.setPlanejamento(planejamento);
-//		}
+		
 		atribuirUsuario(planejamento, authentication);
 		
 		Planejamento planejamentoSalvo = planejamentoRepository.save(planejamento);
