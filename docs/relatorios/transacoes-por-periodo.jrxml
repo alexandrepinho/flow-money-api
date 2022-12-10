@@ -79,7 +79,7 @@
 					<textElement>
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Sub Total de " + $F{tipo}.getDescricao() + " : " +($F{tipo}.getId()==1 ? new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor1}) : new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor2}))]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Sub Total de " + $F{tipo}.getDescricao() + " : " +($F{tipo}.getId()==1 ? new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00", new DecimalFormatSymbols (new Locale ("pt", "BR"))).format($V{valor1}) : new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00", new DecimalFormatSymbols (new Locale ("pt", "BR"))).format($V{valor2}))]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -88,9 +88,9 @@
 		<band height="64" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="1" y="17" width="554" height="30" uuid="a658b6b5-7d33-4455-b863-a97a97c43191"/>
+				<reportElement x="-20" y="17" width="595" height="30" uuid="a658b6b5-7d33-4455-b863-a97a97c43191"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Relatório de Transações por período de " +DATEFORMAT($P{DT_INICIO}, "dd/MM/yyyy") + " até "+ DATEFORMAT($P{DT_FIM}, "dd/MM/yyyy")]]></textFieldExpression>
 			</textField>
@@ -183,7 +183,7 @@
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Saldo no período: " + (new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor2})) + " - " +(new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00").format($V{valor1})) + " = "+ (new java.text.DecimalFormat("¤ #,##0.00;- ¤ #,##0.00").format($V{saldo}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Saldo no período: " + (new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00", new DecimalFormatSymbols (new Locale ("pt", "BR"))).format($V{valor2})) + " - " +(new java.text.DecimalFormat("¤ #,##0.00;¤-#,##0.00", new DecimalFormatSymbols (new Locale ("pt", "BR"))).format($V{valor1})) + " = "+ (new java.text.DecimalFormat("¤ #,##0.00;- ¤ #,##0.00", new DecimalFormatSymbols (new Locale ("pt", "BR"))).format($V{saldo}))]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
