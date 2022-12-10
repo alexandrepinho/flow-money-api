@@ -12,10 +12,9 @@ API de controle financeiro pessoal
 
 [criar base de dados e estrutura com o script](https://github.com/alexandrepinho/flow-money-api/blob/main/sql/flowmoney-api.sql)
 
-[inserts com usuários(admin e 2 comuns) e registros para cadastro de transação até o momento](https://github.com/alexandrepinho/flow-money-api/blob/main/sql/flowmoney-api.sql)
+[inserts com usuários(admin e 2 comuns) e registros para cadastro de transação](https://github.com/alexandrepinho/flow-money-api/blob/main/sql/flowmoney-api.sql)
 
 ### Usuários no script de teste:
-Por enquanto não existe tela para cadastro de usuário que será acessado pelo admin mas existem 3 usuários no script de teste:
   1. admin@flowmoney.com senha admin
   1. joao@flowmoney.com senha teste123
   1. maria@flowmoney.com senha teste123
